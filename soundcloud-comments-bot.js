@@ -9,10 +9,7 @@ var Twit = require('twit');
 
 // Are we on production? Check if an important environment variable exists.
 function isProduction () {
-  if (typeof(process.env.TWITTER_CONSUMER_KEY) !== 'undefined')
-    return true;
-  else
-    return false;
+  return (typeof(process.env.TWITTER_CONSUMER_KEY) !== 'undefined');
 }
 
 // Use environment variables if we're on production, config files if we're local.
@@ -69,34 +66,29 @@ function getRandomComment () {
 
         console.log('FOUND A COMMENT:', comment);
 
-        if (comment.length > 1) {
-
-          if (comment.length < 141) {
-
-            if (isEnglish(comment)) {
-
-              if (!wordfilter.blacklisted(comment)) {
-
-                console.log('COMMENT IS USEABLE!');
-
-                resolve(comment);
-
-              }
-              else {
-                reject('Comment is a reply, contains a bad word, or looks like spam.')
-              }
-            }
-            else {
-              reject('Comment is not English.')
-            }
-          }
-          else {
-            reject('Comment is too long')
-          }
-        }
-        else {
+        if (comment.length < 1) {
           reject('Comment is too short.');
+          return;
         }
+
+        if (comment.length > 141) {
+          reject('Comment is too long');
+          return;
+        }
+
+        if (!isEnglish(comment)) {
+          reject('Comment is not in English.');
+          return;
+        }
+
+        if (wordfilter.blacklisted(comment)) {
+          reject('Comment is a reply, contains a bad word, or looks like spam.');
+          return;
+        }
+
+        console.log('COMMENT IS USEABLE!');
+
+        resolve(comment);
       }
 
     });
@@ -119,9 +111,6 @@ function postTweet (tweet) {
   }
 
 }
-
-// Debug: Try to get ten random comments.
-// _.times(10, getRandomComment);
 
 // Tweet on a regular schedule. 8 times a day means every 3 hours. Note that
 // Because Heroku cycles dynos once per day, the bot's schedule will not be
@@ -163,22 +152,13 @@ function isEnglish (string) {
       // If the language couldn't be detected, just show the tweet. Most of the
       // time this means it's slang or internet-speak and is fine to print.
       if (err.message === 'Failed to identify language') {
-        console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway.');
+        console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway, just for kicks.');
 
         return true;
       }
     }
     else {
-      if (result.languages[0].name === 'ENGLISH') {
-        // console.log('LANGUAGE DETECTION ANALYSIS: Comment is English.');
-
-        return true;
-      }
-      else {
-        // console.log('LANGUAGE DETECTION ERROR: Comment is not in English.');
-
-        return false;
-      }
+      return (result.languages[0].name === 'ENGLISH');
     }
 
   });
@@ -200,6 +180,7 @@ wordfilter.addWords([
   'channel',
   'my cloud',
 
+  'facebook',
   'soundcloud',
   'youtube',
   'instagram',
