@@ -1,5 +1,8 @@
 "use strict";
 
+// Local tweet test override.
+// var canTweetFromLocal = true;
+
 // Load libraries.
 var _ = require('underscore');
 var wordfilter = require('wordfilter');
@@ -102,7 +105,7 @@ function postTweet (tweet) {
 
   console.log('TWEET:', tweet);
 
-  if (isProduction()) {
+  if (isProduction() || canTweetFromLocal) {
     twitter.post('statuses/update', { status: tweet }, function (error) {
       if (error) {
         console.log('ERROR POSTING TWEET:', error);
@@ -176,6 +179,7 @@ wordfilter.addWords([
   'follow',
   'listen to my',
   'check out',
+  'check my',
   'subscribe',
   'channel',
   'my cloud',
@@ -208,4 +212,5 @@ wordfilter.addWords([
 
   // A few curses.
   'fuck'
+
 ]);
