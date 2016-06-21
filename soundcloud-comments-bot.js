@@ -1,7 +1,7 @@
 "use strict";
 
 // Local tweet test override.
-// var canTweetFromLocal = true;
+var canTweetFromLocal = false;
 
 // Load libraries.
 var _ = require('underscore');
