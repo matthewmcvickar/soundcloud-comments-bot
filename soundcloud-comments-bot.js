@@ -47,7 +47,7 @@ function makeAndPostTweet () {
 // Pick a random comment. The API doesn't provide for this, but SoundCloud
 // comment IDs are sequential! There are a lot of missing comments (deleted
 // spam, etc.), but this has about a 40-50% success rate at finding an actual
-// comment, which ain't bad!
+// comment, which is pretty good!
 function getRandomCommentID () {
   return String(_.random(100000000, 300000000));
 }
