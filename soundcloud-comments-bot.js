@@ -37,6 +37,7 @@ else {
 // Get a handful of comments and choose one.
 function makeAndPostTweet () {
   getRandomComment().then(function (results) {
+    console.log('COMMENT FETCHED! GETTING READY TO TWEET.');
     postTweet(results);
   }).catch(function (err) {
     console.log('ERROR:', err);
@@ -74,24 +75,25 @@ function getRandomComment () {
           return;
         }
 
-        if (comment.length > 141) {
+        else if (comment.length > 141) {
           reject('Comment is too long');
           return;
         }
 
-        if (!isEnglish(comment)) {
+        else if (!isEnglish(comment)) {
           reject('Comment is not in English.');
           return;
         }
 
-        if (wordfilter.blacklisted(comment)) {
+        else if (wordfilter.blacklisted(comment)) {
           reject('Comment is a reply, contains a bad word, or looks like spam.');
           return;
         }
 
-        console.log('COMMENT IS USEABLE!');
-
-        resolve(comment);
+        else {
+          console.log('COMMENT IS USEABLE!');
+          resolve(comment);
+        }
       }
 
     });
