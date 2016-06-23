@@ -35,7 +35,7 @@ Finally, I use a [https://www.npmjs.com/package/cld](language detection library)
 
 ### Tweeting SoundCloud Comments
 
-The [`soundcloud-comments-bot.js`](novel-compounds-bot.js) script does the following:
+The [`soundcloud-comments-bot.js`](soundcloud-comments-bot.js) script does the following:
 
 1. Chooses a comment at random from SoundCloud. Checks whether a comment actually exists at that ID.
 
