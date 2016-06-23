@@ -203,7 +203,6 @@ wordfilter.addWords([
 
   'free',
   'download',
-  'DL',
 
   // Replies, SoundCloud links, tags, etc.
   'user-',
