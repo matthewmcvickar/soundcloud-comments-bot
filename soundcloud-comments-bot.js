@@ -195,7 +195,12 @@ wordfilter.addWords([
   'free',
   'download',
 
-  // Spam.
+  // Fake comments.
+  'repost',
+  'full support',
+  'fully support',
+
+  // Traditional spam.
   'sex',
   'cam',
   'dollars',
@@ -213,7 +218,8 @@ wordfilter.addWords([
   '_',
   '#',
 
-  // A few curses.
-  'fuck'
+  // A few curses and bad words.
+  'fuck',
+  'rape'
 
 ]);
