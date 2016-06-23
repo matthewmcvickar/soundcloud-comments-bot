@@ -176,7 +176,7 @@ wordfilter.addWords([
   // The lists below are used in addition to the default set:
   // https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json
 
-  // Spam.
+  // Promotion.
   'follow',
   'listen to my',
   'check out',
@@ -187,22 +187,24 @@ wordfilter.addWords([
 
   'soundcloud',
   'facebook',
-  'twitter'
+  'twitter',
   'youtube',
   'instagram',
   'blog',
 
-  'http',
-  'www',
-  '.co',
-  '.net',
+  'free',
+  'download',
 
+  // Spam.
   'sex',
   'cam',
   'dollars',
 
-  'free',
-  'download',
+  // URLs.
+  'http',
+  'www',
+  '.co',
+  '.net',
 
   // Replies, SoundCloud links, tags, etc.
   'user-',
