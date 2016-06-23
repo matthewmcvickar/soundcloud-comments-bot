@@ -37,7 +37,6 @@ else {
 // Get a handful of comments and choose one.
 function makeAndPostTweet () {
   getRandomComment().then(function (results) {
-    console.log('COMMENT FETCHED! GETTING READY TO TWEET.');
     postTweet(results);
   }).catch(function (err) {
     console.log('ERROR:', err);
@@ -105,7 +104,7 @@ function getRandomComment () {
 
 function postTweet (tweet) {
 
-  console.log('TWEET:', tweet);
+  console.log('NOW TWEETING:', tweet);
 
   if (isProduction() || canTweetFromLocal) {
     twitter.post('statuses/update', { status: tweet }, function (error) {
