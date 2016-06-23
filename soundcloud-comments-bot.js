@@ -185,8 +185,9 @@ wordfilter.addWords([
   'channel',
   'my cloud',
 
-  'facebook',
   'soundcloud',
+  'facebook',
+  'twitter'
   'youtube',
   'instagram',
   'blog',
