@@ -36,12 +36,15 @@ else {
 
 // Get a handful of comments and choose one.
 function makeAndPostTweet () {
-  getRandomComment().then(function (results) {
-    postTweet(results);
-  }).catch(function (err) {
-    console.log('ERROR:', err);
-    makeAndPostTweet();
-  });
+  getRandomComment()
+    .then(isEnglish)
+    .then(function (results) {
+      postTweet(results);
+    })
+    .catch(function (err) {
+      console.log('ERROR:', err);
+      makeAndPostTweet();
+    });
 }
 
 // Pick a random comment. The API doesn't provide for this, but SoundCloud
@@ -74,25 +77,18 @@ function getRandomComment () {
           return;
         }
 
-        else if (comment.length > 141) {
+        if (comment.length > 141) {
           reject('Comment is too long');
           return;
         }
 
-        else if (!isEnglish(comment)) {
-          reject('Comment is not in English.');
-          return;
-        }
-
-        else if (wordfilter.blacklisted(comment)) {
+        if (wordfilter.blacklisted(comment)) {
           reject('Comment is a reply, contains a bad word, or looks like spam.');
           return;
         }
 
-        else {
-          console.log('COMMENT IS USEABLE!');
-          resolve(comment);
-        }
+        console.log('COMMENT IS USEABLE!');
+        resolve(comment);
       }
 
     });
@@ -140,7 +136,7 @@ makeAndPostTweet();
 
 
 // Is this English?
-function isEnglish (string) {
+function isEnglish (comment) {
 
   var options = {
     isHTML       : false,
@@ -148,22 +144,28 @@ function isEnglish (string) {
     tldHint      : 'com'
   };
 
-  return languageDetector.detect(string, options, function(err, result) {
+  return new Promise (function (resolve, reject) {
 
-    if (!_.isEmpty(err)) {
-      console.log('LANGUAGE DETECTION ERROR:', err.message);
+    return languageDetector.detect(comment, options, function(err, result) {
 
-      // If the language couldn't be detected, just show the tweet. Most of the
-      // time this means it's slang or internet-speak and is fine to print.
-      if (err.message === 'Failed to identify language') {
-        console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway, just for kicks.');
+      if (!_.isEmpty(err)) {
+        console.log('LANGUAGE DETECTION ERROR:', err.message);
 
-        return true;
+        // If the language couldn't be detected, just show the tweet. Most of the
+        // time this means it's slang or internet-speak and is fine to print.
+        if (err.message === 'Failed to identify language') {
+          console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway, just for kicks.');
+
+          resolve(comment);
+        }
       }
-    }
-    else {
-      return (result.languages[0].name === 'ENGLISH');
-    }
+      else {
+        if (result.languages[0].name === 'ENGLISH') {
+          resolve(comment);
+        }
+      }
+
+    });
 
   });
 
