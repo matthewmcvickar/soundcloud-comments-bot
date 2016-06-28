@@ -37,11 +37,6 @@ else {
 // Get a handful of comments and choose one.
 function makeAndPostTweet () {
   getRandomComment()
-    .then(isEnglish)
-    .catch(function (err) {
-      console.log('ERROR:', err);
-      makeAndPostTweet();
-    })
     .then(function (results) {
       postTweet(results);
     })
@@ -88,6 +83,11 @@ function getRandomComment () {
 
         if (wordfilter.blacklisted(comment)) {
           reject('Comment is a reply, contains a bad word, or looks like spam.');
+          return;
+        }
+
+        if (!isEnglish(comment)) {
+          reject('Comment is not in English.');
           return;
         }
 
@@ -148,28 +148,22 @@ function isEnglish (comment) {
     tldHint      : 'com'
   };
 
-  return new Promise (function (resolve, reject) {
+  return languageDetector.detect(comment, options, function(err, result) {
 
-    return languageDetector.detect(comment, options, function(err, result) {
+    if (!_.isEmpty(err)) {
+      console.log('LANGUAGE DETECTION ERROR:', err.message);
 
-      if (!_.isEmpty(err)) {
-        console.log('LANGUAGE DETECTION ERROR:', err.message);
+      // If the language couldn't be detected, just show the tweet. Most of the
+      // time this means it's slang or internet-speak and is fine to print.
+      if (err.message === 'Failed to identify language') {
+        console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway, just for kicks.');
 
-        // If the language couldn't be detected, just show the tweet. Most of the
-        // time this means it's slang or internet-speak and is fine to print.
-        if (err.message === 'Failed to identify language') {
-          console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway, just for kicks.');
-
-          resolve(comment);
-        }
+        return true;
       }
-      else {
-        if (result.languages[0].name === 'ENGLISH') {
-          resolve(comment);
-        }
-      }
-
-    });
+    }
+    else {
+      return (result.languages[0].name === 'ENGLISH');
+    }
 
   });
 
