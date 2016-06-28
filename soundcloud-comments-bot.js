@@ -71,27 +71,43 @@ function getRandomComment () {
 
         console.log('FOUND A COMMENT:', comment);
 
+        console.log('ANALYZING: Checking if too short…');
+
         if (comment.length < 1) {
           reject('Comment is too short.');
           return;
         }
+
+        console.log('\tOK!');
+
+        console.log('ANALYZING: Checking if too long…');
 
         if (comment.length > 141) {
           reject('Comment is too long');
           return;
         }
 
+        console.log('\tOK!');
+
+        console.log('ANALYZING: Checking for bad words…');
+
         if (wordfilter.blacklisted(comment)) {
           reject('Comment is a reply, contains a bad word, or looks like spam.');
           return;
         }
+
+        console.log('\tOK!');
+
+        console.log('ANALYZING: Checking if is English…');
 
         if (!isEnglish(comment)) {
           reject('Comment is not in English.');
           return;
         }
 
-        console.log('COMMENT IS USEABLE!');
+        console.log('\tOK!');
+
+        console.log('SUCCESS: All checks passed! Comment is useable!');
         resolve(comment);
       }
 
