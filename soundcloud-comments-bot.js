@@ -34,9 +34,12 @@ else {
   var twitter = new Twit(require('./twitter-config.js'));
 }
 
+// Execute once upon initialization.
+makeAndPostTweet();
+
 // Get a handful of comments and choose one.
 function makeAndPostTweet () {
-  getRandomComment()
+  getComment()
     .then(function (results) {
       postTweet(results);
     })
@@ -46,22 +49,22 @@ function makeAndPostTweet () {
     });
 }
 
-// Pick a random comment. The API doesn't provide for this, but SoundCloud
-// comment IDs are sequential! There are a lot of missing comments (deleted
-// spam, etc.), but this has about a 40-50% success rate at finding an actual
-// comment, which is pretty good!
-function getRandomCommentID () {
-  return String(_.random(100000000, 300000000));
-}
-
-function getRandomComment () {
+function getComment () {
 
   return new Promise (function (resolve, reject) {
 
     console.log('\n---\n');
 
-    SC.get('/comments/' + getRandomCommentID(), function(err, comment) {
-      // console.log('\n\nFULL RESPONSE:\n\n', comment)
+    // Pick a random comment. The API doesn't provide for this, but SoundCloud
+    // comment IDs are sequential! There are a lot of missing comments (deleted
+    // spam, etc.), but this has about a 40-50% success rate at finding an
+    // actual comment, which is pretty good!
+    var randomCommentID = String(_.random(100000000, 300000000));
+
+    // Query the SoundCloud API and filter the results.
+    SC.get('/comments/' + randomCommentID, function(err, comment) {
+
+      // console.log('\n\nFULL API RESPONSE:\n\n', comment)
 
       if (typeof(err) !== 'undefined') {
         reject('Comment does not exist.');
@@ -112,9 +115,7 @@ function getRandomComment () {
       }
 
     });
-
   });
-
 }
 
 
@@ -147,9 +148,6 @@ if (isProduction()) {
     }
   }, (1000 * 60 * 60 * 24) / timesToTweetPerDay);
 }
-
-// Go!
-makeAndPostTweet();
 
 
 ///
