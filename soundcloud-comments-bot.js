@@ -184,6 +184,7 @@ wordfilter.addWords([
   'subscribe',
   'channel',
   'my cloud',
+  'add me',
 
   'soundcloud',
   'facebook',
@@ -197,6 +198,7 @@ wordfilter.addWords([
 
   // Fake comments.
   'repost',
+  'posted',
   'full support',
   'fully support',
 
@@ -204,6 +206,7 @@ wordfilter.addWords([
   'sex',
   'cam',
   'dollars',
+  'money',
 
   // URLs.
   'http',
