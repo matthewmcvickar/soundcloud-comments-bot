@@ -38,6 +38,10 @@ else {
 function makeAndPostTweet () {
   getRandomComment()
     .then(isEnglish)
+    .catch(function (err) {
+      console.log('ERROR:', err);
+      makeAndPostTweet();
+    })
     .then(function (results) {
       postTweet(results);
     })
