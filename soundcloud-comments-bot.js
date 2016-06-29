@@ -66,6 +66,8 @@ function getComment () {
 
       // console.log('\n\nFULL API RESPONSE:\n\n', comment)
 
+      console.log('LOOKING FOR A COMMENT…');
+
       if (typeof(err) !== 'undefined') {
         reject('Comment does not exist.');
       }
