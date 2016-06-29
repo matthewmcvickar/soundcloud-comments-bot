@@ -31,7 +31,7 @@ My aesthetic for this bot is simple, text-only, anonymous. So I filter the poten
 
 I also filter out any comment including any of the [bad words listed in Darius Kazemi's wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
 
-Finally, I use a [https://www.npmjs.com/package/cld](language detection library) to ensure the comment is English. The library is imperfect and error-prone when it comes to checking informal, comment-style language, but helps discard the comments that obviously aren't English. The primary reason for this filter is preventing abusive language appearing in my bot in a language I don't speak and thus cannot filter out.
+Finally, I use a [language detection library](https://www.npmjs.com/package/cld) to ensure the comment is English. The library is imperfect for checking informal, comment-style language, but helps discard most non-English comments. The primary reason for this filter is preventing abusive language appearing in my bot in a language that I don't speak and thus cannot filter out.
 
 ### Tweeting SoundCloud Comments
 
