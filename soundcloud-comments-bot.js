@@ -66,10 +66,10 @@ function getComment () {
 
       // console.log('\n\nFULL API RESPONSE:\n\n', comment)
 
-      console.log('LOOKING FOR A COMMENT…');
+      console.log('LOOKING FOR A COMMENT AT ID #' + randomCommentID + '…');
 
       if (typeof(err) !== 'undefined') {
-        reject('Comment does not exist.');
+        reject('Comment does not exist at this ID anymore.');
       }
       else {
         var comment = comment.body.trim();
