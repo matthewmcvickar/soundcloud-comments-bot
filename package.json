@@ -1,6 +1,6 @@
 {
   "name": "soundcloudsaid",
-  "description": "A Twitter bot that tweets random SoundCloud comments.",
+  "description": "A Twitter bot that tweets random comments from SoundCloud.",
   "version": "1.0.0",
   "homepage": "https://github.com/matthewmcvickar/soundcloud-comments-bot",
   "author": {

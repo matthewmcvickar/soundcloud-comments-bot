@@ -17,7 +17,7 @@ This bot grabs a comment at random.
 
 At first I struggled with how to retrieve a random comment—the SoundCloud API doesn't allow for getting random nodes. Then I discovered that track IDs (and comment IDs) are sequential. I found an old comment ID at [100000000](http://api.soundcloud.com/comments/100000000?client_id=f189440f42d14bfcf0a708703782cefc), a recent one at [290000000](http://api.soundcloud.com/comments/290000000?client_id=f189440f42d14bfcf0a708703782cefc), and figured that 190 million comments was more than enough of a well from which to draw.
 
-The script picks a number at random and checks if that comment still exists, then either proceeds with evaluating the comment or moves on to another random comment if it doesn't exist.
+The script picks a number at random, checks if the comment still exists, and passes it on for filtering.
 
 ### Filtering Comments
 
@@ -31,7 +31,7 @@ My aesthetic for this bot is simple, text-only, anonymous. So I filter the poten
 
 I also filter out any comment including any of the [bad words listed in Darius Kazemi's wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
 
-Finally, I use a [https://www.npmjs.com/package/cld](language detection library) to ensure the comment is English. The library is imperfect and error-prone, but helps discard the comments that obviously aren't English. The reason I do this is to prevent abusive language appearing in my bot in a language I don't speak and can't filter for.
+Finally, I use a [https://www.npmjs.com/package/cld](language detection library) to ensure the comment is English. The library is imperfect and error-prone when it comes to checking informal, comment-style language, but helps discard the comments that obviously aren't English. The primary reason for this filter is preventing abusive language appearing in my bot in a language I don't speak and thus cannot filter out.
 
 ### Tweeting SoundCloud Comments
 
