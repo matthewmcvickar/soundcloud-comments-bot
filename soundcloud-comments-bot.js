@@ -123,14 +123,19 @@ function getComment () {
 
 function postTweet (tweet) {
 
-  console.log('NOW TWEETING:', tweet);
+  if (typeof(tweet) !== 'undefined') {
+    console.log('NOW TWEETING:', tweet);
 
-  if (isProduction() || canTweetFromLocal) {
-    twitter.post('statuses/update', { status: tweet }, function (error) {
-      if (error) {
-        console.log('ERROR POSTING TWEET:', error);
-      }
-    });
+    if (isProduction() || canTweetFromLocal) {
+      twitter.post('statuses/update', { status: tweet }, function (error) {
+        if (error) {
+          console.log('ERROR POSTING TWEET:', error);
+        }
+      });
+    }
+  }
+  else {
+    console.log('ERROR: No comment was fetched!');
   }
 
 }
@@ -143,7 +148,7 @@ if (isProduction()) {
 
   setInterval(function () {
     try {
-      postTweet();
+      makeAndPostTweet();
     }
     catch (err) {
       console.log('PROCESS UNSUCCESSFUL!', err);
