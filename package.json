@@ -17,12 +17,12 @@
     "start": "node soundcloud-comments-bot.js"
   },
   "dependencies": {
-    "cld": "^2.4.6",
     "node-soundcloud": "0.0.5",
     "request": "^2.72.0",
     "twit": "^2.2.4",
     "underscore": "^1.8.3",
-    "wordfilter": "^0.2.6"
+    "wordfilter": "^0.2.6",
+    "yandex-translate": "^2.1.0"
   },
   "devDependencies": {}
 }

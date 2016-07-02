@@ -6,7 +6,6 @@ var canTweetFromLocal = false;
 // Load libraries.
 var _ = require('underscore');
 var wordfilter = require('wordfilter');
-var languageDetector = require('cld');
 var SC = require('node-soundcloud');
 var Twit = require('twit');
 
@@ -17,6 +16,8 @@ function isProduction () {
 
 // Use environment variables if we're on production, config files if we're local.
 if (isProduction()) {
+  var yandexKey = process.env.YANDEX_KEY;
+
   SC.init({
     id:     process.env.SOUNDCLOUD_CLIENT_ID,
     secret: process.env.SOUNDCLOUD_SECRET
@@ -30,9 +31,16 @@ if (isProduction()) {
   });
 }
 else {
-  SC.init(require('./soundcloud-config.js'));
-  var twitter = new Twit(require('./twitter-config.js'));
+  var yandexConfig = require('./config/yandex-config.js'),
+      yandexKey    = yandexConfig.key;
+
+  var twitter = new Twit(require('./config/twitter-config.js'));
+
+  SC.init(require('./config/soundcloud-config.js'));
 }
+
+// Load Yandex Translation API library.
+var translate = require('yandex-translate')(yandexKey);
 
 // Execute once upon initialization.
 makeAndPostTweet();
@@ -43,8 +51,8 @@ function makeAndPostTweet () {
     .then(function (results) {
       postTweet(results);
     })
-    .catch(function (err) {
-      console.log('ERROR:', err);
+    .catch(function (error) {
+      console.log('ERROR:', error);
       makeAndPostTweet();
     });
 }
@@ -62,13 +70,13 @@ function getComment () {
     var randomCommentID = String(_.random(100000000, 300000000));
 
     // Query the SoundCloud API and filter the results.
-    SC.get('/comments/' + randomCommentID, function(err, comment) {
+    SC.get('/comments/' + randomCommentID, function(error, comment) {
 
       // console.log('\n\nFULL API RESPONSE:\n\n', comment)
 
       console.log('LOOKING FOR A COMMENT AT ID #' + randomCommentID + '…');
 
-      if (typeof(err) !== 'undefined') {
+      if (typeof(error) !== 'undefined') {
         reject('Comment does not exist at this ID anymore.');
       }
       else {
@@ -105,21 +113,27 @@ function getComment () {
 
         console.log('ANALYZING: Checking if is English…');
 
-        if (!isEnglish(comment)) {
-          reject('Comment is not in English.');
-          return;
-        }
+        translate.detect(comment, function (error, result) {
+          if (result.lang === 'en') {
+            console.log('\tOK!');
 
-        console.log('\tOK!');
+            console.log('SUCCESS: All checks passed! Comment is useable!');
 
-        console.log('SUCCESS: All checks passed! Comment is useable!');
-        resolve(comment);
+            resolve(comment);
+          }
+          else if (typeof(error) !== 'undefined') {
+            reject(error);
+          }
+          else {
+            reject('Comment is not in English.')
+          }
+        })
+
       }
 
     });
   });
 }
-
 
 function postTweet (tweet) {
 
@@ -150,8 +164,8 @@ if (isProduction()) {
     try {
       makeAndPostTweet();
     }
-    catch (err) {
-      console.log('PROCESS UNSUCCESSFUL!', err);
+    catch (error) {
+      console.log('PROCESS UNSUCCESSFUL!', error);
     }
   }, (1000 * 60 * 60 * 24) / timesToTweetPerDay);
 }
@@ -159,36 +173,6 @@ if (isProduction()) {
 
 ///
 
-
-// Is this English?
-function isEnglish (comment) {
-
-  var options = {
-    isHTML       : false,
-    encodingHint : 'UTF8UTF8',
-    tldHint      : 'com'
-  };
-
-  return languageDetector.detect(comment, options, function(err, result) {
-
-    if (!_.isEmpty(err)) {
-      console.log('LANGUAGE DETECTION ERROR:', err.message);
-
-      // If the language couldn't be detected, just show the tweet. Most of the
-      // time this means it's slang or internet-speak and is fine to print.
-      if (err.message === 'Failed to identify language') {
-        console.log('LANGUAGE DETECTION OVERRIDE: Approving as English anyway, just for kicks.');
-
-        return true;
-      }
-    }
-    else {
-      return (result.languages[0].name === 'ENGLISH');
-    }
-
-  });
-
-}
 
 // Additional filters.
 wordfilter.addWords([
