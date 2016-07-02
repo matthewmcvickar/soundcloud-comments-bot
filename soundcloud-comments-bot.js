@@ -18,16 +18,16 @@ function isProduction () {
 if (isProduction()) {
   var yandexKey = process.env.YANDEX_KEY;
 
-  SC.init({
-    id:     process.env.SOUNDCLOUD_CLIENT_ID,
-    secret: process.env.SOUNDCLOUD_SECRET
-  });
-
   var twitter = new Twit({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
     access_token: process.env.TWITTER_ACCESS_TOKEN,
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+  });
+
+  SC.init({
+    id:     process.env.SOUNDCLOUD_CLIENT_ID,
+    secret: process.env.SOUNDCLOUD_SECRET
   });
 }
 else {
@@ -45,8 +45,9 @@ var translate = require('yandex-translate')(yandexKey);
 // Execute once upon initialization.
 makeAndPostTweet();
 
-// Get a handful of comments and choose one.
+// The main process. Get a useable comment and tweet it or try again.
 function makeAndPostTweet () {
+
   getComment()
     .then(function (results) {
       postTweet(results);
@@ -55,8 +56,10 @@ function makeAndPostTweet () {
       console.log('ERROR:', error);
       makeAndPostTweet();
     });
+
 }
 
+// Get a random comment, see if it's usable, and approve it if so!
 function getComment () {
 
   return new Promise (function (resolve, reject) {
