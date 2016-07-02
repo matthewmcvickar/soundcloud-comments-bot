@@ -59,7 +59,7 @@ function makeAndPostTweet () {
 
 }
 
-// Get a random comment, see if it's usable, and approve it if so!
+// Get a random comment and see if it's usable.
 function getComment () {
 
   return new Promise (function (resolve, reject) {
