@@ -215,6 +215,10 @@ wordfilter.addWords([
   'cam',
   'dollars',
   'money',
+  'fans',
+  'plays',
+  'get play',
+  'get fan',
 
   // URLs.
   'http',
