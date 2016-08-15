@@ -235,6 +235,7 @@ wordfilter.addWords([
 
   // A few curses and bad words.
   'fuck',
-  'rape'
+  'rape',
+  'gay'
 
 ]);
