@@ -193,6 +193,7 @@ wordfilter.addWords([
   'channel',
   'my cloud',
   'add me',
+  'profile',
 
   'soundcloud',
   'facebook',
