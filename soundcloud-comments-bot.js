@@ -194,6 +194,7 @@ wordfilter.addWords([
   'my cloud',
   'add me',
   'profile',
+  'premiere',
 
   'soundcloud',
   'facebook',
