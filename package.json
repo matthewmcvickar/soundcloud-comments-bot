@@ -19,7 +19,7 @@
   "dependencies": {
     "node-soundcloud": "0.0.6",
     "request": "^2.81.0",
-    "twit": "^2.2.5",
+    "twit": "^2.2.9",
     "underscore": "^1.8.3",
     "wordfilter": "^0.2.6",
     "yandex-translate": "^2.1.1"
