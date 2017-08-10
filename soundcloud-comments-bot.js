@@ -161,7 +161,9 @@ function postTweet (tweet) {
 // Because Heroku cycles dynos once per day, the bot's schedule will not be
 // regular: https://devcenter.heroku.com/articles/how-heroku-works#dyno-manager
 if (isProduction()) {
+  var millisecondsInDay = 1000 * 60 * 60 * 24;
   var timesToTweetPerDay = 8;
+  var tweetInterval = millisecondsInDay / timesToTweetPerDay;
 
   setInterval(function () {
     try {
@@ -170,7 +172,7 @@ if (isProduction()) {
     catch (error) {
       console.log('PROCESS UNSUCCESSFUL!', error);
     }
-  }, (1000 * 60 * 60 * 24) / timesToTweetPerDay);
+  }, tweetInterval);
 }
 
 
@@ -184,7 +186,7 @@ wordfilter.addWords([
   // The lists below are used in addition to the default set:
   // https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json
 
-  // Promotion.
+  // Promotion, spam, link pollution.
   'follow',
   'listen to my',
   'check out',
@@ -195,6 +197,12 @@ wordfilter.addWords([
   'add me',
   'profile',
   'premiere',
+  'promo',
+  'app',
+  'repost',
+  'posted',
+  'full support',
+  'fully support',
 
   'soundcloud',
   'facebook',
@@ -204,13 +212,7 @@ wordfilter.addWords([
   'blog',
 
   'free',
-  'download',
-
-  // Fake comments.
-  'repost',
-  'posted',
-  'full support',
-  'fully support',
+  'download'
 
   // Traditional spam.
   'sex',
