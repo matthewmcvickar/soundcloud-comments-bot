@@ -212,7 +212,7 @@ wordfilter.addWords([
   'blog',
 
   'free',
-  'download'
+  'download',
 
   // Traditional spam.
   'sex',
