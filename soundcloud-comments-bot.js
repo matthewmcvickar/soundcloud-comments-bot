@@ -241,6 +241,7 @@ wordfilter.addWords([
   'fuck',
   'rape',
   'raping',
-  'gay'
+  'gay',
+  'nig'
 
 ]);
