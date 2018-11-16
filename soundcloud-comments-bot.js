@@ -81,7 +81,7 @@ function getComment () {
     // comment IDs are sequential! There are a lot of missing comments (deleted
     // spam, etc.), but this has about a 40-50% success rate at finding an
     // actual comment, which is pretty good!
-    var randomCommentID = String(_.random(100000000, 300000000));
+    var randomCommentID = String(_.random(100000000, 500000000));
 
     // Query the SoundCloud API and filter the results.
     SC.get('/comments/' + randomCommentID, function(error, comment) {

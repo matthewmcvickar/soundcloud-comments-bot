@@ -19,7 +19,7 @@ This bot grabs a comment at random.
 
 ### Getting Random Comments
 
-At first I struggled with how to retrieve a random comment—the SoundCloud API doesn't allow for getting random nodes. Then I discovered that track IDs (and comment IDs) are sequential. I found an old comment ID at [100000000](http://api.soundcloud.com/comments/100000000?client_id=f189440f42d14bfcf0a708703782cefc), a recent one at [290000000](http://api.soundcloud.com/comments/290000000?client_id=f189440f42d14bfcf0a708703782cefc), and figured that 190 million comments was more than enough of a well from which to draw.
+At first I struggled with how to retrieve a random comment—the SoundCloud API doesn't allow for getting random nodes. Then I discovered that track IDs (and comment IDs) are sequential. I found an old comment ID at [100000000](http://api.soundcloud.com/comments/100000000?client_id=f189440f42d14bfcf0a708703782cefc), a recent one at [500000000](http://api.soundcloud.com/comments/500000000?client_id=f189440f42d14bfcf0a708703782cefc), and figured that 190 million comments was more than enough of a well from which to draw.
 
 The script picks a number at random, checks if the comment still exists, and passes it on for filtering.
 
