@@ -1,17 +1,22 @@
-"use strict";
+'use strict';
 
-// Local tweet test override.
-var canTweetFromLocal = false;
+// Change this to `true` to post to the web
+// when you run this script locally.
+var canPostFromLocal = false;
 
 // Load libraries.
 var _ = require('underscore');
 var wordfilter = require('wordfilter');
 var SC = require('node-soundcloud');
+var Masto = require('mastodon');
 var Twit = require('twit');
 
 // Are we on production? Check if an important environment variable exists.
 function isProduction () {
-  return (typeof(process.env.TWITTER_CONSUMER_KEY) !== 'undefined');
+  return (
+    typeof(process.env.MASTODON_ACCESS_TOKEN) !== 'undefined' ||
+    typeof(process.env.TWITTER_CONSUMER_KEY) !== 'undefined'
+  );
 }
 
 // Use environment variables if we're on production, config files if we're local.
@@ -25,6 +30,11 @@ if (isProduction()) {
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
   });
 
+  var mastodon = new Masto({
+    access_token: process.env.MASTODON_ACCESS_TOKEN,
+    api_url: 'https://botsin.space/api/v1/'
+  });
+
   SC.init({
     id:     process.env.SOUNDCLOUD_CLIENT_ID,
     secret: process.env.SOUNDCLOUD_SECRET
@@ -34,7 +44,8 @@ else {
   var yandexConfig = require('./config/yandex-config.js'),
       yandexKey    = yandexConfig.key;
 
-  var twitter = new Twit(require('./config/twitter-config.js'));
+  var mastodon = new Masto(require('./config/mastodon-config.js'));
+  var twitter  = new Twit(require('./config/twitter-config.js'));
 
   SC.init(require('./config/soundcloud-config.js'));
 }
@@ -43,18 +54,18 @@ else {
 var translate = require('yandex-translate')(yandexKey);
 
 // Execute once upon initialization.
-makeAndPostTweet();
+createAndPost();
 
-// The main process. Get a useable comment and tweet it or try again.
-function makeAndPostTweet () {
+// The main process. Get a useable comment and post it or try again.
+function createAndPost () {
 
   getComment()
     .then(function (results) {
-      postTweet(results);
+      post(results);
     })
     .catch(function (error) {
       console.log('ERROR:', error);
-      makeAndPostTweet();
+      createAndPost();
     });
 
 }
@@ -114,7 +125,7 @@ function getComment () {
 
         console.log('\tOK!');
 
-        console.log('ANALYZING: Checking if is English…');
+        console.log('ANALYZING: Checking if English…');
 
         translate.detect(comment, function (error, result) {
           if (result.lang === 'en') {
@@ -138,15 +149,28 @@ function getComment () {
   });
 }
 
-function postTweet (tweet) {
+function post (thePostToPost) {
+  if (typeof(thePostToPost) !== 'undefined') {
+    console.log('NOW ATTEMPTING TO POST:', thePostToPost);
 
-  if (typeof(tweet) !== 'undefined') {
-    console.log('NOW TWEETING:', tweet);
-
-    if (isProduction() || canTweetFromLocal) {
-      twitter.post('statuses/update', { status: tweet }, function (error) {
+    // Twitter.
+    if (isProduction() || canPostFromLocal) {
+      twitter.post('statuses/update', { status: thePostToPost }, function (error) {
         if (error) {
-          console.log('ERROR POSTING TWEET:', error);
+          console.log('ERROR POSTING:', error);
+        }
+        else {
+          console.log('SUCCESSFULLY POSTED TO TWITTER!');
+        }
+      });
+
+      // Mastodon.
+      mastodon.post('statuses', { status: thePostToPost }, function (error) {
+        if (error) {
+          console.log('ERROR POSTING:', error);
+        }
+        else {
+          console.log('SUCCESSFULLY POSTED TO MASTODON!');
         }
       });
     }
@@ -154,25 +178,24 @@ function postTweet (tweet) {
   else {
     console.log('ERROR: No comment was fetched!');
   }
-
 }
 
-// Tweet on a regular schedule. 8 times a day means every 3 hours. Note that
-// Because Heroku cycles dynos once per day, the bot's schedule will not be
+// Post on a regular schedule. 8 times a day means every 3 hours. Note that
+// because Heroku cycles dynos once per day, the bot's schedule will not be
 // regular: https://devcenter.heroku.com/articles/how-heroku-works#dyno-manager
 if (isProduction()) {
   var millisecondsInDay = 1000 * 60 * 60 * 24;
-  var timesToTweetPerDay = 8;
-  var tweetInterval = millisecondsInDay / timesToTweetPerDay;
+  var timesToPostPerDay = 8;
+  var postInterval = millisecondsInDay / timesToPostPerDay;
 
   setInterval(function () {
     try {
-      makeAndPostTweet();
+      createAndPost();
     }
     catch (error) {
-      console.log('PROCESS UNSUCCESSFUL!', error);
+      console.log('POSTING UNSUCCESSFUL!', error);
     }
-  }, tweetInterval);
+  }, postInterval);
 }
 
 
@@ -242,6 +265,6 @@ wordfilter.addWords([
   'rape',
   'raping',
   'gay',
-  'nig'
+  'nigg'
 
 ]);

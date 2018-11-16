@@ -1,7 +1,7 @@
 {
   "name": "soundcloudsaid",
-  "description": "A Twitter bot that tweets random comments from SoundCloud.",
-  "version": "1.0.0",
+  "description": "A bot that posts random comments from SoundCloud.",
+  "version": "3.0.0",
   "homepage": "https://github.com/matthewmcvickar/soundcloud-comments-bot",
   "author": {
     "name": "Matthew McVickar",
@@ -17,6 +17,7 @@
     "start": "node soundcloud-comments-bot.js"
   },
   "dependencies": {
+    "mastodon": "^1.2.2",
     "node-soundcloud": "0.0.6",
     "request": "^2.88.0",
     "twit": "^2.2.11",

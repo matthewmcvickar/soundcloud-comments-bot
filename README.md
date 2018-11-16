@@ -1,8 +1,12 @@
 # SoundCloud Said
 
-**[@soundcloudsaid](https://twitter.com/soundcloudsaid)**
+A bot that posts random comments from SoundCloud.
 
-A Twitter bot that tweets random comments from SoundCloud.
+Currently simultaneously posting eight times a day to both Twitter and Mastodon.
+
+- **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)**
+- **[@soundcloudsaid on Twitter](https://twitter.com/soundcloudsaid)**
+
 
 ---
 
@@ -33,7 +37,7 @@ I also filter out any comment including any of the [bad words listed in Darius K
 
 Finally, I use the [Yandex translation API](https://tech.yandex.com/translate/) to ensure the comment is English. The library is imperfect for checking informal, comment-style language, but helps discard most non-English comments. The primary reason for this filter is preventing abusive language appearing in my bot in a language that I don't speak and thus cannot filter out.
 
-### Tweeting SoundCloud Comments
+### Posting SoundCloud Comments
 
 The [`soundcloud-comments-bot.js`](soundcloud-comments-bot.js) script does the following:
 
@@ -41,7 +45,7 @@ The [`soundcloud-comments-bot.js`](soundcloud-comments-bot.js) script does the f
 
 2. Filters the comment using the criteria listed above.
 
-3. If it passes muster, tweet the comment.
+3. If it passes muster, post the comment.
 
 This script is running on Heroku.
 
