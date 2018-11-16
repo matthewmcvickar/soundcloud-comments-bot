@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "node-soundcloud": "0.0.6",
-    "request": "^2.81.0",
-    "twit": "^2.2.9",
-    "underscore": "^1.8.3",
+    "request": "^2.88.0",
+    "twit": "^2.2.11",
+    "underscore": "^1.9.1",
     "wordfilter": "^0.2.6",
-    "yandex-translate": "^2.1.1"
+    "yandex-translate": "^2.1.2"
   },
   "devDependencies": {}
 }
