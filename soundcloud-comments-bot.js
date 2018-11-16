@@ -14,7 +14,7 @@ var Twit = require('twit');
 // Are we on production? Check if an important environment variable exists.
 function isProduction () {
   return (
-    typeof(process.env.MASTODON_ACCESS_TOKEN) !== 'undefined' ||
+    typeof(process.env.MASTODON_ACCESS_TOKEN) !== 'undefined' &&
     typeof(process.env.TWITTER_CONSUMER_KEY) !== 'undefined'
   );
 }
