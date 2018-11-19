@@ -180,12 +180,12 @@ function post (thePostToPost) {
   }
 }
 
-// Post on a regular schedule. 8 times a day means every 3 hours. Note that
+// Post on a regular schedule. 6 times a day means every 4 hours. Note that
 // because Heroku cycles dynos once per day, the bot's schedule will not be
 // regular: https://devcenter.heroku.com/articles/how-heroku-works#dyno-manager
 if (isProduction()) {
   var millisecondsInDay = 1000 * 60 * 60 * 24;
-  var timesToPostPerDay = 8;
+  var timesToPostPerDay = 6;
   var postInterval = millisecondsInDay / timesToPostPerDay;
 
   setInterval(function () {
