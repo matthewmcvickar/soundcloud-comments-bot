@@ -265,6 +265,8 @@ wordfilter.addWords([
   'rape',
   'raping',
   'gay',
-  'nig'
+  'nig',
+  'igg',
+  'icc'
 
 ]);
