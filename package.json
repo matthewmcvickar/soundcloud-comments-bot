@@ -25,5 +25,6 @@
     "wordfilter": "^0.2.6",
     "yandex-translate": "^2.1.2"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "heroku-run-build-script": true
 }
