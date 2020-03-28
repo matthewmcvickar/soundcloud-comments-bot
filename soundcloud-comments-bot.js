@@ -57,99 +57,171 @@ var translate = require('yandex-translate')(yandexKey);
 createAndPost();
 
 // The main process. Get a useable comment and post it or try again.
-function createAndPost () {
+function createAndPost() {
 
-  getComment()
-    .then(function (results) {
-      post(results);
+  getTrack()
+    .then((trackID) => {
+      return getComment(trackID)
+    })
+    .then((comment) => {
+      post(comment);
     })
     .catch(function (error) {
       console.log('ERROR:', error);
+
+      // That track had no comments or no good comments, so run it again.
       createAndPost();
     });
 
 }
 
-// Get a random comment and see if it's usable.
-function getComment () {
-
+// Get a random track and see if it has comments.
+function getTrack() {
   return new Promise (function (resolve, reject) {
+
+    // DEBUG: Test a track we know has two comments:
+    // resolve(249409061);
 
     console.log('\n---\n');
 
-    // Pick a random comment. The API doesn't provide for this, but SoundCloud
-    // comment IDs are sequential! There are a lot of missing comments (deleted
-    // spam, etc.), but this has about a 40-50% success rate at finding an
-    // actual comment, which is pretty good!
-    var randomCommentID = String(_.random(100000000, 500000000));
+    // Pick a random track. The API doesn't provide for this, but SoundCloud
+    // track IDs are sequential! There are a lot of missing tracks (deleted,
+    // private, etc.), but this has a decent success rate.
+    var randomTrackID = String(_.random(0, 784514266));
 
     // Query the SoundCloud API and filter the results.
-    SC.get('/comments/' + randomCommentID, function(error, comment) {
+    SC.get('/tracks/' + randomTrackID, function(error, track) {
 
-      // console.log('\n\nFULL API RESPONSE:\n\n', comment)
+      console.log('LOOKING FOR A TRACK AT ID #' + randomTrackID + '…');
 
-      console.log('LOOKING FOR A COMMENT AT ID #' + randomCommentID + '…');
+      // console.log('\n\nFULL API RESPONSE:\n\n', track)
 
       if (typeof(error) !== 'undefined') {
-        reject('Comment does not exist at this ID anymore.');
+        reject('Track does not exist at this ID anymore.');
       }
       else {
-        var comment = comment.body.trim();
+        if (track.comment_count > 0) {
+          console.log('\tOK! Track has comments! Comment count: ' + track.comment_count);
 
-        console.log('FOUND A COMMENT:', comment);
-
-        console.log('ANALYZING: Checking if too short…');
-
-        if (comment.length < 1) {
-          reject('Comment is too short.');
-          return;
+          resolve(track.id);
         }
-
-        console.log('\tOK!');
-
-        console.log('ANALYZING: Checking if too long…');
-
-        if (comment.length > 141) {
-          reject('Comment is too long');
-          return;
+        else {
+          reject('Track has no comments.');
         }
-
-        console.log('\tOK!');
-
-        console.log('ANALYZING: Checking for bad words…');
-
-        if (wordfilter.blacklisted(comment)) {
-          reject('Comment is a reply, contains a bad word, or looks like spam.');
-          return;
-        }
-
-        console.log('\tOK!');
-
-        console.log('ANALYZING: Checking if English…');
-
-        translate.detect(comment, function (error, result) {
-          if (result.lang === 'en') {
-            console.log('\tOK!');
-
-            console.log('SUCCESS: All checks passed! Comment is useable!');
-
-            resolve(comment);
-          }
-          else if (typeof(error) !== 'undefined') {
-            reject(error);
-          }
-          else {
-            reject('Comment is not in English.')
-          }
-        })
-
       }
+    });
 
+  });
+
+}
+
+// Get a random comment and see if it's usable.
+function getComment(trackID) {
+
+  console.log('\n---\n');
+
+  return new Promise(function (resolve, reject) {
+
+    // Get all of the comments for this track.
+    SC.get('/tracks/' + trackID + '/comments', async function(error, comments) {
+
+      console.log('CHECKING COMMENTS FOR TRACK ID #' + trackID + '…');
+
+      if (typeof(error) !== 'undefined') {
+        reject('Failure fetching comments for this track.')
+      }
+      else {
+        // Check all comments and only keep the useable ones.
+        await getUseableComments(comments)
+          .then((useableComments) => {
+            // Choose one of the comments at random.
+            var chosenComment = _.sample(useableComments);
+            resolve(chosenComment);
+          })
+          .catch((error) => {
+            reject('None of the comments were useable:', error);
+          });
+      }
+    });
+
+  });
+}
+
+// Go through each comment until we find a useable one.
+async function getUseableComments(comments) {
+  let useableComments = [];
+
+  for (let i = 0; i < comments.length; i++) {
+    var comment = comments[i].body.trim();
+
+    console.log('CHECKING COMMENT ' + ( i + 1 ) + ' OF ' + comments.length + ':', comment);
+
+    console.log('ANALYZING: Checking if too short…');
+
+    if (comment.length < 1) {
+      console.log('NOPE: Comment is too short.');
+      continue;
+    }
+
+    console.log('\tOK!');
+
+    console.log('ANALYZING: Checking if too long…');
+
+    if (comment.length > 280) {
+      console.log('NOPE: Comment is too long');
+      continue;
+    }
+
+    console.log('\tOK!');
+
+    console.log('ANALYZING: Checking for bad words…');
+
+    if (wordfilter.blacklisted(comment)) {
+      console.log('NOPE: Comment is a reply, contains a bad word, or looks like spam.');
+      continue;
+    }
+
+    console.log('\tOK!');
+
+    console.log('ANALYZING: Checking if English…');
+
+    await checkIfEnglish(comment)
+      .then((result) => {
+        console.log('\tOK!', i);
+        console.log('SUCCESS: All checks passed! Comment is useable!');
+
+        useableComments.push(result);
+      })
+      .catch((error) => {
+        console.log('NOPE: ' + error)
+      });
+  }
+
+  if (useableComments.length > 0) {
+    return useableComments;
+  }
+  else {
+    return false;
+  }
+}
+
+function checkIfEnglish(comment) {
+  return new Promise(function (resolve, reject) {
+    translate.detect(comment, function (error, result) {
+      if (result.lang === 'en') {
+        resolve(comment)
+      }
+      else if (typeof(error) !== 'undefined') {
+        reject('Error from Yandex:', error)
+      }
+      else {
+        reject('Comment is not in English.')
+      }
     });
   });
 }
 
-function post (thePostToPost) {
+function post(thePostToPost) {
   if (typeof(thePostToPost) !== 'undefined') {
     console.log('NOW ATTEMPTING TO POST:', thePostToPost);
 

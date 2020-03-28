@@ -19,11 +19,11 @@
   "dependencies": {
     "mastodon": "^1.2.2",
     "node-soundcloud": "0.0.6",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "twit": "^2.2.11",
-    "underscore": "^1.9.1",
+    "underscore": "^1.9.2",
     "wordfilter": "^0.2.6",
-    "yandex-translate": "^2.1.2"
+    "yandex-translate": "^2.1.3"
   },
   "devDependencies": {},
   "heroku-run-build-script": true
