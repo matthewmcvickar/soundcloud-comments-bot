@@ -187,7 +187,7 @@ async function getUseableComments(comments) {
 
     await checkIfEnglish(comment)
       .then((result) => {
-        console.log('\tOK!', i);
+        console.log('\tOK!');
         console.log('SUCCESS: All checks passed! Comment is useable!');
 
         useableComments.push(result);
