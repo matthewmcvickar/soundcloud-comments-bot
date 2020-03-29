@@ -2,7 +2,7 @@
 
 A bot that posts random comments from SoundCloud.
 
-Currently simultaneously posting eight times a day to both Twitter and Mastodon.
+This bot is currently posting every few hours to both Twitter and Mastodon.
 
 - **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)**
 - **[@soundcloudsaid on Twitter](https://twitter.com/soundcloudsaid)**
@@ -19,9 +19,13 @@ This bot grabs a comment at random.
 
 ### Getting Random Comments
 
-At first I struggled with how to retrieve a random comment—the SoundCloud API doesn't allow for getting random nodes. Then I discovered that track IDs (and comment IDs) are sequential. I found an old comment ID at [100000000](http://api.soundcloud.com/comments/100000000?client_id=f189440f42d14bfcf0a708703782cefc), a recent one at [500000010](http://api.soundcloud.com/comments/500000010?client_id=f189440f42d14bfcf0a708703782cefc), and figured that 190 million comments was more than enough of a well from which to draw.
+At first I struggled with how to retrieve a random comment—the SoundCloud API doesn't allow for getting random nodes. Then I discovered that track IDs (and comment IDs) are sequential. I found an old comment ID at [100000000](https://api.soundcloud.com/comments/100000000?client_id=f189440f42d14bfcf0a708703782cefc), a recent one at [500000010](https://api.soundcloud.com/comments/500000010?client_id=f189440f42d14bfcf0a708703782cefc), and figured that 190 million comments was more than enough of a well from which to draw.
 
-The script picks a number at random, checks if the comment still exists, and passes it on for filtering.
+~The script picks a number at random, checks if the comment still exists, and passes it on for filtering.~
+
+As of March 10, 2020 the `/comments` endpoint was apparently removed from the SoundCloud API, so this stopped working! There was no notice of this on the SoundCloud API blog, but the API reference has nothing about a comments endpoint anymore. Strangely, the API itself is still returning URIs for comments as though the endpoint still existed—e.g., check the `uri` property on [this comment](https://api.soundcloud.com/tracks/123456789/comments?client_id=f189440f42d14bfcf0a708703782cefc).)
+
+In any case, I had to rework this script to first fetch a random track and then check if it has any useable comments. And now it works again!
 
 ### Filtering Comments
 
@@ -41,11 +45,13 @@ Finally, I use the [Yandex translation API](https://tech.yandex.com/translate/) 
 
 The [`soundcloud-comments-bot.js`](soundcloud-comments-bot.js) script does the following:
 
-1. Chooses a comment at random from SoundCloud. Checks whether a comment actually exists at that ID.
+1. Chooses a track at random from SoundCloud. Checks whether the track still exists and if it has any comments. If either is untrue, get another track at random.
 
-2. Filters the comment using the criteria listed above.
+2. Check all comments using the criteria listed above.
 
-3. If it passes muster, post the comment.
+3. Randomly select one of the comments that is useable.
+
+3. Post the comment.
 
 This script is running on Heroku.
 
@@ -57,9 +63,9 @@ This script is running on Heroku.
 
 I could not have created this bot without help from the following people and resources:
 
-- [Justin Falcone](http://twitter.com/modernserf) provided code review.
+- [Justin Falcone](https://twitter.com/modernserf) provided code review.
 
-- [Camille Darroux](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (I didn't know until I Googled for it just after launching this bot.)
+- [Twitter user @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (Tat this tweet and account have since been deleted.)
 
 - [Yandex Translation API](https://tech.yandex.com/translate/)
 
