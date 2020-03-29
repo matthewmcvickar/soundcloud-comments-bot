@@ -23,7 +23,7 @@ At first I struggled with how to retrieve a random comment—the SoundCloud API 
 
 ~The script picks a number at random, checks if the comment still exists, and passes it on for filtering.~
 
-As of March 10, 2020 the `/comments` endpoint was apparently removed from the SoundCloud API, so this stopped working! There was no notice of this on the SoundCloud API blog, but the API reference has nothing about a comments endpoint anymore. Strangely, the API itself is still returning URIs for comments as though the endpoint still existed—e.g., check the `uri` property on [this comment](https://api.soundcloud.com/tracks/123456789/comments?client_id=f189440f42d14bfcf0a708703782cefc).)
+As of March 10, 2020 the `/comments` endpoint was apparently removed from the SoundCloud API, so this stopped working! There was no notice of this on the SoundCloud API blog, but the API reference has nothing about a comments endpoint anymore. (Strangely, the API itself is still returning URIs for comments as though the endpoint still existed—e.g., check the `uri` property on [this comment](https://api.soundcloud.com/tracks/123456789/comments?client_id=f189440f42d14bfcf0a708703782cefc).)
 
 In any case, I had to rework this script to first fetch a random track and then check if it has any useable comments. And now it works again!
 
@@ -65,7 +65,7 @@ I could not have created this bot without help from the following people and res
 
 - [Justin Falcone](https://twitter.com/modernserf) provided code review.
 
-- [Twitter user @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (Tat this tweet and account have since been deleted.)
+- [Twitter user @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (This tweet and account have since been deleted.)
 
 - [Yandex Translation API](https://tech.yandex.com/translate/)
 
