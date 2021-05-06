@@ -21,7 +21,7 @@
     "node-soundcloud": "0.0.6",
     "request": "^2.88.2",
     "twit": "^2.2.11",
-    "underscore": "^1.9.2",
+    "underscore": "^1.12.1",
     "wordfilter": "^0.2.6",
     "yandex-translate": "^2.1.3"
   },
