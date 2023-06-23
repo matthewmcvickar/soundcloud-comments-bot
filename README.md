@@ -84,8 +84,6 @@ resources:
 
 - [Twitter user @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (This tweet and account have since been deleted.)
 
-- [Yandex Translation API](https://tech.yandex.com/translate/)
-
 ## Afterword
 
 This is my third Twitter bot. ([@obliquestions](https://twitter.com/obliquestions) and [@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
