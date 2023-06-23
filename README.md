@@ -6,7 +6,7 @@ A bot that posts random comments from SoundCloud.
 Currently posting several times a day to Mastodon. (It used to post to Twitter,
 but I don't use Twitter anymore and neither do my bots.)
 
-🎧💬🤖&rarr; **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)
+🎧💬🤖&rarr; **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)**
 
 ---
 
@@ -35,10 +35,9 @@ At first I struggled with how to retrieve a random comment—the SoundCloud API
 doesn't allow for getting random nodes. Then I discovered that track IDs (and
 comment IDs) are sequential. I found an old comment ID at `100000000` a recent
 one at `500000000`, and figured that 400 million comments was more than enough
-of a well from which to draw.
-
-~The script picks a number at random, checks if the comment still exists, and
-passes it on for filtering.~
+of a well from which to draw. ~The script picks a number at random, checks if
+the comment still exists, and passes it on for filtering.~ (See above; this
+method doesn't work anymore.)
 
 ### Filtering Comments
 
@@ -54,11 +53,13 @@ potential comments rigorously. I filter out the following:
 
 I also filter out any comment including any of the [bad words listed in Darius Kazemi's wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
 
-Finally, I use the [Yandex translation API](https://tech.yandex.com/translate/)
-to ensure the comment is English. The library is imperfect for checking
-informal, comment-style language, but helps discard most non-English comments.
-The primary reason for this filter is preventing abusive language appearing in
-my bot in a language that I don't speak and thus cannot filter out.
+Finally, I use the [Google Translate API](https://cloud.google.com/translate) to
+make sure the comment is English. (I used to use Yandex, but I couldn't figure
+out their new API structure and didn't want to pay for access). The automated
+check is imperfect for checking informal, comment-style language, but helps
+discard most non-English comments. The primary reason for this filter is
+preventing abusive language appearing in my bot in a language that I don't speak
+and thus cannot filter out.
 
 ### Posting SoundCloud Comments
 
