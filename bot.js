@@ -21,11 +21,13 @@ const keyv = new Keyv({
 });
 
 // The main process. Get a comment and post it.
-export async function doPost() {
-  await getCommentToPost()
-  .then(async (comment) => {
-    console.log('Trying to post "' + comment + '" to Mastodon...');
-    return await postToMastodon(comment);
+export function doPost() {
+  return new Promise(async () => {
+    getCommentToPost()
+    .then(async (comment) => {
+      console.log('Trying to post "' + comment + '" to Mastodon...');
+      return await postToMastodon(comment);
+    });
   });
 }
 
