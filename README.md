@@ -6,7 +6,7 @@ A bot that posts random comments from SoundCloud.
 Currently posting several times a day to Mastodon. (It used to post to Twitter,
 but I don't use Twitter anymore and neither do my bots.)
 
-🎧💬🤖&rarr; **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)**
+🔊💬🤖&rarr; **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)**
 
 ---
 
@@ -80,10 +80,10 @@ The [`bot.js`](bot.js) script does the following:
 I could not have created this bot without help from the following people and
 resources:
 
-- [Justin Falcone](https://twitter.com/modernserf) provided code review.
+- [Justin Falcone](https://justinfalcone.com/) provided code review.
 
 - [Twitter user @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (This tweet and account have since been deleted.)
 
 ## Afterword
 
-This is my third Twitter bot. ([@obliquestions](https://twitter.com/obliquestions) and [@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
+This is my third bot. ([@obliquestions](https://botsin.space/@obliquestions) and [@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
