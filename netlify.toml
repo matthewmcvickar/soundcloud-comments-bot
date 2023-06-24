@@ -1,8 +1,8 @@
 [functions."do-post"]
-  # schedule = "0 */4 * * *" # every four hours (six times a day)
+  schedule = "0 */4 * * *" # every four hours (six times a day)
   # schedule = "0 */6 * * *" # every six hours (four times a day)
   # schedule = "@hourly" # every hour
   # schedule = "*/5 * * * *" # every five minutes (288 times a day)
-  schedule = "*/2 * * * *" # every two minutes
+  # schedule = "*/2 * * * *" # every two minutes
   # schedule = "* * * * *" # every minute
   # schedule = "@yearly"
