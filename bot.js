@@ -260,7 +260,7 @@ async function checkIfEnglish(comment) {
   const responseData = await response.json();
   const detectedLanguage = responseData.data.detections[0][0].language;
 
-  console.log('Detections:', responseData.data.detections);
+  // console.log('Detections:', responseData.data.detections);
   // console.log('Detected language: ' + detectedLanguage);
 
   if (detectedLanguage === 'en') {
@@ -305,7 +305,7 @@ async function postToMastodon(thePostToPost) {
       visibility: 'public'
     });
 
-    console.log('RESULT OF ATTEMPT TO POST:', status);
+    // console.log('RESULT OF ATTEMPT TO POST:', status);
 
     if (status.id) {
       console.log('SUCCESSFULLY POSTED TO MASTODON: ', status.url);
