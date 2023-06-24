@@ -23,7 +23,7 @@ const keyv = new Keyv({
 async function doPost() {
   const comment = await getCommentToPost();
   console.log('Trying to post "' + comment + '" to Mastodon...');
-  return await postToMastodon(comment);
+  // return await postToMastodon(comment);
 }
 
 // Post!
@@ -42,7 +42,7 @@ function accessMastodon() {
 // Get SoundCloud OAuth access token, which is necessary for API calls.
 async function getSoundCloudAccessToken() {
   if (await keyv.has('access_token')) {
-    console.log('Access token already exists.');
+    // console.log('Access token already exists.');
     return await refreshSoundCloudAccessToken();
   }
   else {
@@ -116,7 +116,7 @@ async function refreshSoundCloudAccessToken() {
 async function doSoundCloudRequest(endpoint) {
   const accessToken = await getSoundCloudAccessToken();
   // console.log('Doing request with token ' + accessToken)
-  console.log(`Querying https://api.soundcloud.com/${endpoint}`)
+  // console.log(`Querying https://api.soundcloud.com/${endpoint}`)
 
   const response = await fetch(
     `https://api.soundcloud.com/${endpoint}`,
@@ -278,9 +278,14 @@ async function getCommentToPost() {
       console.log('\nCOMMENT TO POST:', comment)
       return comment;
     }
+    else {
+      // Try again if we failed to find a usable comment.
+      console.log('FAILED. TRYING AGAIN.');
+      return getCommentToPost();
+    }
   }
   else {
-    // Try again if any we failed to find a track with comments.
+    // Try again if we failed to find a track with comments.
     console.log('FAILED. TRYING AGAIN.');
     return getCommentToPost();
   }
