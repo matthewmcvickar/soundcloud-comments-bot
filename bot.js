@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv'; dotenv.config();
-import * as _ from 'underscore';
 import { login } from 'masto';
 import Keyv from '@keyvhq/core';
 import { KeyvFile } from 'keyv-file';
@@ -145,7 +144,7 @@ async function getTrackThatHasComments() {
   // Pick a random track. The API doesn't provide for this, but SoundCloud track
   // IDs are sequential! There are a lot of missing tracks (deleted, private,
   // etc.), but this will... eventually find a track with comments.
-  const randomTrackID = String(_.random(0, maxTrackID));
+  const randomTrackID = String(Math.floor(Math.random() * (maxTrackID - 1) + 1));
 
   console.log('Looking for a track at ID #' + randomTrackID + '…');
 
@@ -184,7 +183,7 @@ async function getCommentFromTrack(trackID) {
   const usableComments = await getUsableComments(comments);
   if (usableComments) {
     // Choose one of the comments at random.
-    return _.sample(usableComments);
+    return usableComments[Math.floor(Math.random() * usableComments.length)];
   }
   else {
     console.log('None of the comments were usable.');

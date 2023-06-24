@@ -22,7 +22,6 @@
     "keyv": "^4.5.2",
     "keyv-file": "^0.2.0",
     "masto": "^5.11.3",
-    "underscore": "^1.13.6",
     "wordfilter": "^0.2.6"
   },
   "devDependencies": {
