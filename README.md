@@ -1,5 +1,6 @@
 # SoundCloud Said
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/880890c4-5c92-4218-a7b2-8c07b78567af/deploy-status)](https://app.netlify.com/sites/soundcloud-comments-bot/deploys)
 
 A bot that posts random comments from SoundCloud.
 
