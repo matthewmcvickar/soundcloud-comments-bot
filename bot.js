@@ -69,14 +69,14 @@ async function getNewSoundCloudAccessToken() {
   const responseData = await response.json();
 
   // console.log('Full request response:', responseData);
-  console.log('Newly created tokens expire in ' + responseData.expires_in / 60 + ' minutes.');
+  // console.log('Newly created tokens expire in ' + responseData.expires_in / 60 + ' minutes.');
 
   const expirationTimeInMilliseconds = responseData.expires_in * 1000;
   await keyv.set('access_token', responseData.access_token, expirationTimeInMilliseconds);
   await keyv.set('refresh_token', responseData.refresh_token, expirationTimeInMilliseconds);
 
   const accessToken = await keyv.get('access_token');
-  console.log('Getting newly created access token:', accessToken);
+  // console.log('Getting newly created access token:', accessToken);
 
   return await keyv.get('access_token');
 }
@@ -101,21 +101,21 @@ async function refreshSoundCloudAccessToken() {
   const responseData = await response.json();
 
   // console.log('Full request response:', responseData);
-  console.log('Storing refreshed access token and new refresh token which expire in ' + responseData.expires_in/60 + ' minutes.') ;
+  // console.log('Storing refreshed access token and new refresh token which expire in ' + responseData.expires_in/60 + ' minutes.') ;
 
   const expirationTimeInMilliseconds = responseData.expires_in * 1000;
   await keyv.set('access_token', responseData.access_token, expirationTimeInMilliseconds);
   await keyv.set('refresh_token', responseData.refresh_token, expirationTimeInMilliseconds);
 
   const accessToken = await keyv.get('access_token');
-  console.log('Getting refreshed access token:', accessToken);
+  // console.log('Getting refreshed access token:', accessToken);
 
   return accessToken;
 }
 
 async function doSoundCloudRequest(endpoint) {
   const accessToken = await getSoundCloudAccessToken();
-  console.log('Doing request with token ' + accessToken)
+  // console.log('Doing request with token ' + accessToken)
   console.log(`Querying https://api.soundcloud.com/${endpoint}`)
 
   const response = await fetch(
