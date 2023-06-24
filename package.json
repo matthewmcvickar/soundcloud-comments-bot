@@ -18,16 +18,16 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^7.2.1",
-    "@keyvhq/core": "^1.6.26",
+    "@keyvhq/core": "^2.0.0",
     "keyv": "^4.5.2",
     "keyv-file": "^0.2.0",
-    "masto": "^5.8.0",
+    "masto": "^5.11.3",
     "request": "^2.88.2",
     "underscore": "^1.13.6",
     "wordfilter": "^0.2.6"
   },
   "devDependencies": {
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.1",
     "run-func": "^3.0.0"
   }
 }
