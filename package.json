@@ -1,7 +1,7 @@
 {
   "name": "soundcloudsaid",
   "description": "A bot that posts random comments from SoundCloud.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "type": "module",
   "homepage": "https://github.com/matthewmcvickar/soundcloud-comments-bot",
   "author": {
