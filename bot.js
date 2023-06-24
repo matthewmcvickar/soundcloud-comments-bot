@@ -20,11 +20,14 @@ const keyv = new Keyv({
 });
 
 // The main process. Get a comment and post it.
-export async function doPost() {
+async function doPost() {
   const comment = await getCommentToPost();
   console.log('Trying to post "' + comment + '" to Mastodon...');
   return await postToMastodon(comment);
 }
+
+// Post!
+doPost();
 
 /* --- */
 
