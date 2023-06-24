@@ -23,7 +23,7 @@ const keyv = new Keyv({
 async function doPost() {
   const comment = await getCommentToPost();
   console.log('Trying to post "' + comment + '" to Mastodon...');
-  // return await postToMastodon(comment);
+  return await postToMastodon(comment);
 }
 
 // Post!
