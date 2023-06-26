@@ -1,4 +1,4 @@
-# SoundCloud Said
+# SoundCloud Comments Bot
 
 A bot that posts random comments from SoundCloud.
 
