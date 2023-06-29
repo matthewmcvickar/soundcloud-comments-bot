@@ -16,27 +16,21 @@ opinion on the production, and, rarely, a negative review.
 
 This bot grabs a comment at random.
 
-## How I Built It
+## How It Works
 
 ### Getting Random Comments
 
-#### How It Works Now
+GitHub Actions is configured to run the [`bot.js`](bot.js) script on a fixed
+schedule throughout the day. That script does the following:
 
-As of March 10, 2020 the `/comments` endpoint was removed from the SoundCloud
-API without notice, so this bot stopped working.
+1. Chooses a track at random from SoundCloud. Checks whether the track still
+   exists and if it has any comments. If either is untrue, get another track at
+   random. Retry until we get a track with comments.
 
-To get the bot working again, I rewrote the bot to first fetch a random track
-and then check if it has any useable comments.
+2. Check all comments using the criteria listed in the 'Filtering Comments'
+   section below. If none are usable, go back to step one.
 
-#### How It Used to Work
-
-At first I struggled with how to retrieve a random comment—the SoundCloud API
-doesn't allow for getting random nodes. Then I discovered that track IDs (and
-comment IDs) are sequential. I found an old comment ID at `100000000` a recent
-one at `500000000`, and figured that 400 million comments was more than enough
-of a well from which to draw. ~The script picks a number at random, checks if
-the comment still exists, and passes it on for filtering.~ (See above; this
-method doesn't work anymore.)
+3. Randomly select one of the comments that is usable and post it!
 
 ### Filtering Comments
 
@@ -53,26 +47,23 @@ potential comments rigorously. I filter out the following:
 I also filter out any comment including any of the [bad words listed in Darius Kazemi's wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
 
 Finally, I use the [Google Translate API](https://cloud.google.com/translate) to
-make sure the comment is English. (I used to use Yandex, but I couldn't figure
-out their new API structure and didn't want to pay for access). The automated
-check is imperfect for checking informal, comment-style language, but helps
-discard most non-English comments. The primary reason for this filter is
-preventing abusive language appearing in my bot in a language that I don't speak
-and thus cannot filter out.
+make sure the comment is English. The automated check is imperfect for checking
+informal, comment-style language, but helps discard most non-English comments.
+The primary reason for this filter is preventing abusive language appearing in
+my bot in a language that I don't speak and thus cannot filter out.
 
-### Posting SoundCloud Comments
+### How It Used to Work
 
-The [`bot.js`](bot.js) script does the following:
+At first I struggled with how to retrieve a random comment—the SoundCloud API
+doesn't allow for getting random nodes. Then I discovered that track IDs (and
+comment IDs) are sequential. I found an old comment ID at `100000000` a recent
+one at `500000000`, and figured that 400 million comments was more than enough
+of a well from which to draw. The script picks a number at random, checks if
+the comment still exists, and passes it on for filtering.
 
-1. Chooses a track at random from SoundCloud. Checks whether the track still
-   exists and if it has any comments. If either is untrue, get another track at
-   random.
-
-2. Check all comments using the criteria listed above.
-
-3. Randomly select one of the comments that is useable.
-
-4. Posts the comment.
+In early 2020, however, the `/comments` endpoint was removed from the SoundCloud
+API without notice, so this bot stopped working. In 2023, I finally rewrote the
+bot to use the process described above.
 
 ## Acknowledgements
 
