@@ -22,9 +22,13 @@ const keyv = new Keyv({
 // The main process. Get a comment and post it.
 async function doPost() {
   const comment = await getCommentToPost();
+  console.log('Found a usable comment after ' + attempts + ' attempts.');
   console.log('Trying to post "' + comment + '" to Mastodon...');
   return await postToMastodon(comment);
 }
+
+// Keep track of how many attempts were made before a usable comment was found.
+let attempts = 0;
 
 // Post!
 doPost();
@@ -143,6 +147,7 @@ async function getTrackThatHasComments() {
   // return 170359332;
 
   console.log('\n💫 🔍 🔊 💬\n');
+  attempts++;
 
   // Pick a random track. The API doesn't provide for this, but SoundCloud track
   // IDs are sequential! There are a lot of missing tracks (deleted, private,
