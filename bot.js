@@ -82,7 +82,7 @@ async function getNewSoundCloudAccessToken() {
   const accessToken = await keyv.get('access_token');
   // console.log('Getting newly created access token:', accessToken);
 
-  return await keyv.get('access_token');
+  return accessToken;
 }
 
 async function refreshSoundCloudAccessToken() {
