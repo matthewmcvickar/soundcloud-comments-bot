@@ -303,7 +303,7 @@ async function postToMastodon(thePostToPost) {
 
     const masto = await accessMastodon();
 
-    console.log('LOGGING IN TO MASTODON:', masto);
+    // console.log('LOGGING IN TO MASTODON:', masto);
 
     const status = await masto.v1.statuses.create({
       status: thePostToPost,
