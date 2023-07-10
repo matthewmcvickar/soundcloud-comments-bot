@@ -21,10 +21,10 @@ const keyv = new Keyv({
 
 // The main process. Get a comment and post it.
 async function doPost() {
+  console.log('\n💫 🔍 🔊 💬');
   const comment = await getCommentToPost();
-  console.log('Found a usable comment after ' + attempts + ' attempts.');
-  console.log('Found the usable comment on this track: ' + trackURL);
-  console.log('Trying to post "' + comment + '" to Mastodon...');
+  console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + trackURL);
+  console.log('\nTrying to post "' + comment + '" to Mastodon…');
   return await postToMastodon(comment);
 }
 
@@ -149,15 +149,17 @@ async function getTrackThatHasComments() {
   // DEBUG: Test a track we know has a non-English comment:
   // return 170359332;
 
-  console.log('\n💫 🔍 🔊 💬\n');
+  console.log('\n---\n');
+
+  // Click the counter!
   attempts++;
 
   // Pick a random track. The API doesn't provide for this, but SoundCloud track
   // IDs are sequential! There are a lot of missing tracks (deleted, private,
-  // etc.), but this will... eventually find a track with comments.
+  // etc.), but this will, uh, *eventually* find a track with comments.
   const randomTrackID = String(Math.floor(Math.random() * (maxTrackID - 1) + 1));
 
-  console.log('Looking for a track at ID #' + randomTrackID + '…');
+  console.log('Attempt #' + attempts + ': Looking for a track at ID #' + randomTrackID + '…');
 
   const response = await doSoundCloudRequest(`tracks/${randomTrackID}`);
 
@@ -190,17 +192,20 @@ async function getTrackThatHasComments() {
 async function getCommentFromTrack(trackID) {
   // Get all of the comments for this track.
   const comments = await doSoundCloudRequest('tracks/' + trackID + '/comments');
-  console.log('CHECKING COMMENTS FOR TRACK ID #' + trackID + '…');
+  console.log('CHECKING COMMENTS FOR TRACK ID ' + trackID + '…');
   // console.log('Full response of comments: ', comments);
 
   // Check all comments and only keep the usable ones.
   const usableComments = await getUsableComments(comments);
   if (usableComments) {
     // Choose one of the comments at random.
-    return usableComments[Math.floor(Math.random() * usableComments.length)];
+    const chosenCommentNumber = Math.floor(Math.random() * usableComments.length);
+    const chosenComment = usableComments[chosenCommentNumber];
+    console.log('\nCHOSE COMMENT ' + (chosenCommentNumber+1) + ' of ' + usableComments.length + ':\n\t', chosenComment)
+    return chosenComment;
   }
   else {
-    console.log('None of the comments were usable.');
+    console.log('FAILED: None of the comments were usable.');
     return false;
   }
 }
@@ -286,7 +291,6 @@ async function getCommentToPost() {
     const comment = await getCommentFromTrack(trackID);
 
     if (comment) {
-      console.log('\nCOMMENT TO POST:', comment)
       return comment;
     }
     else {
@@ -305,7 +309,7 @@ async function getCommentToPost() {
 // Post the comment.
 async function postToMastodon(thePostToPost) {
   if (thePostToPost) {
-    console.log('NOW ATTEMPTING TO POST:', thePostToPost);
+    // console.log('NOW ATTEMPTING TO POST:', thePostToPost);
 
     const masto = await accessMastodon();
 
@@ -319,7 +323,7 @@ async function postToMastodon(thePostToPost) {
     // console.log('RESULT OF ATTEMPT TO POST:', status);
 
     if (status.id) {
-      console.log('SUCCESSFULLY POSTED TO MASTODON: ', status.url);
+      console.log('\n✅ SUCCESSFULLY POSTED TO MASTODON:', status.url);
     }
     else {
       console.log('ERROR POSTING:', status);
