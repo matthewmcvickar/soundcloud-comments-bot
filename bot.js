@@ -23,12 +23,15 @@ const keyv = new Keyv({
 async function doPost() {
   const comment = await getCommentToPost();
   console.log('Found a usable comment after ' + attempts + ' attempts.');
+  console.log('Found the usable comment on this track: ' + trackURL);
   console.log('Trying to post "' + comment + '" to Mastodon...');
   return await postToMastodon(comment);
 }
 
-// Keep track of how many attempts were made before a usable comment was found.
+// Keep track of how many attempts were made before a usable comment was found
+// and which track URL provided the comment.
 let attempts = 0;
+let trackURL;
 
 // Post!
 doPost();
@@ -159,6 +162,9 @@ async function getTrackThatHasComments() {
   const response = await doSoundCloudRequest(`tracks/${randomTrackID}`);
 
   // console.log('FULL API RESPONSE:\n', response);
+
+  // Save the track URL for later reference.
+  trackURL = response.permalink_url;
 
   if (response.code === 401) {
     console.log('Could not authorize.');
