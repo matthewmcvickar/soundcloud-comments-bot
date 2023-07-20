@@ -19,9 +19,9 @@
   "dependencies": {
     "@google-cloud/translate": "^7.2.2",
     "@keyvhq/core": "^2.0.0",
-    "keyv": "^4.5.2",
+    "keyv": "^4.5.3",
     "keyv-file": "^0.2.0",
-    "masto": "^5.11.3",
+    "masto": "^5.11.4",
     "wordfilter": "^0.2.6"
   },
   "devDependencies": {
