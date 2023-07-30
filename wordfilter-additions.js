@@ -48,8 +48,14 @@ export default [
   // URLs.
   'http',
   'www',
+  '.cc',
   '.co',
+  '.do',
+  '.gl',
+  '.io',
+  '.ly',
   '.net',
+  '.st',
 
   // Replies, SoundCloud links, tags, etc.
   'user-',
