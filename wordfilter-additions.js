@@ -17,7 +17,6 @@ export default [
   'profile',
   'premiere',
   'promo',
-  'app',
   'repost',
   'posted',
   'full support',
@@ -46,23 +45,25 @@ export default [
   'get fan',
 
   // URLs.
+  // Notice the double-escaping here, which makes sure the escape characters
+  // make it into the regex.
   'http',
   'www',
-  '.cc',
-  '.co',
-  '.do',
-  '.gl',
-  '.io',
-  '.ly',
-  '.net',
-  '.st',
+  '\\.cc',
+  '\\.co',
+  '\\.do',
+  '\\.gl',
+  '\\.io',
+  '\\.ly',
+  '\\.net',
+  '\\.st',
 
   // Replies, SoundCloud links, tags, etc.
-  'user-',
-  '\@',
-  '\n',
-  '_',
-  '#',
+  'user\\-',
+  '\\@',
+  '\\\n',
+  '\\_',
+  '\\#',
 
   // A few curses and bad words.
   'fuck',

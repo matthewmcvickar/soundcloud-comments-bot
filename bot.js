@@ -219,6 +219,8 @@ async function getUsableComments(comments) {
 
     console.log('\nCHECKING COMMENT ' + ( i + 1 ) + ' OF ' + comments.length + ':', comment);
 
+    // ---
+
     console.log('ANALYZING: Checking if too short…');
 
     if (comment.length < 1) {
@@ -227,6 +229,8 @@ async function getUsableComments(comments) {
     }
 
     console.log('\tOK! Comment is not too short.');
+
+    // ---
 
     console.log('ANALYZING: Checking if too long…');
 
@@ -237,6 +241,8 @@ async function getUsableComments(comments) {
 
     console.log('\tOK! Comment is not too long.');
 
+    // ---
+
     console.log('ANALYZING: Checking for bad words…');
 
     if (wordfilter.blacklisted(comment)) {
@@ -244,7 +250,9 @@ async function getUsableComments(comments) {
       continue;
     }
 
-    console.log('\tOK!');
+    console.log('\tOK! Comment does not contain any bad words');
+
+    // ---
 
     console.log('ANALYZING: Checking if written in English…');
 
