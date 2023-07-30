@@ -165,6 +165,10 @@ async function getTrackThatHasComments() {
 
   // console.log('FULL API RESPONSE:\n', response);
 
+  if (typeof response !== 'object') {
+    console.log('Bad response.');
+  }
+
   // Save the track URL for later reference.
   trackURL = response.permalink_url;
 
