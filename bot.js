@@ -137,7 +137,11 @@ async function doSoundCloudRequest(endpoint) {
   );
 
   if (response) {
-    return await response.json();
+    const json = await response.json();
+    // Make sure the response is a JSON object and not an error message.
+    if (typeof json === 'object') {
+      return json;
+    }
   }
 }
 
@@ -201,6 +205,12 @@ async function getCommentFromTrack(trackID) {
   const comments = await doSoundCloudRequest('tracks/' + trackID + '/comments');
   console.log('CHECKING COMMENTS FOR TRACK ID ' + trackID + '…');
   // console.log('Full response of comments: ', comments);
+
+  // Exit
+  if (!comments) {
+    console.log('FAILED: Request failed or the returned comments object was empty.')
+    return false;
+  }
 
   // Check all comments and only keep the usable ones.
   const usableComments = await getUsableComments(comments);
