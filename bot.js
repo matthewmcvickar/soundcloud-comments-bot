@@ -172,7 +172,7 @@ async function getTrackThatHasComments() {
 
   // console.log('FULL API RESPONSE:\n', response);
 
-  if (typeof response !== 'object') {
+  if (!response) {
     console.log('Bad response.');
   }
 
