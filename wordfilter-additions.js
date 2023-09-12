@@ -65,7 +65,8 @@ export default [
   '\\_',
   '\\#',
 
-  // A few curses and bad words.
+  // A few more curses and bad words.
+  'jew',
   'fuck',
   'rape',
   'raping',
