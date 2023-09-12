@@ -67,6 +67,7 @@ export default [
 
   // A few more curses and bad words.
   'jew',
+  'arab',
   'fuck',
   'rape',
   'raping',
