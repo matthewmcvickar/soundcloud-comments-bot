@@ -66,10 +66,13 @@ export default [
   '\\#',
 
   // A few more curses and bad words.
-  'jew',
   'arab',
+  'bibl',
+  'islam',
   'israel',
-  'bible',
+  'jew',
+  'judai',
+  'muslim',
   'slave',
   'fuck',
   'rape',
@@ -77,5 +80,5 @@ export default [
   'gay',
   'nig',
   'igg',
-  'icc'
+  'icc',
 ];
