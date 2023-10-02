@@ -81,4 +81,17 @@ export default [
   'nig',
   'igg',
   'icc',
+
+  // Ableist language.
+  'blind',
+  'cripple',
+  'deaf',
+  'handicap',
+  'idiot',
+  'insane',
+  'lame',
+  'mental',
+  'psycho',
+  'spaz',
+  'special need',
 ];
