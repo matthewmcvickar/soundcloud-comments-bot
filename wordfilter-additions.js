@@ -81,6 +81,7 @@ export default [
   'nig',
   'igg',
   'icc',
+  'voodoo',
 
   // Ableist language.
   'blind',
