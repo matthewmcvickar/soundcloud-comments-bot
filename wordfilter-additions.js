@@ -65,7 +65,8 @@ export default [
   '\\_',
   '\\#',
 
-  // A few more curses and bad words.
+  // A few more curses and bad words and things that just too often are part of
+  // things I don't want this bot to post.
   'arab',
   'bibl',
   'islam',
@@ -82,6 +83,11 @@ export default [
   'igg',
   'icc',
   'voodoo',
+  'china',
+  'japan',
+  'asia',
+  'orient',
+  'africa',
 
   // Ableist language.
   'blind',
