@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'; dotenv.config();
-import { login } from 'masto';
+import { createRestAPIClient } from 'masto';
 import Keyv from '@keyvhq/core';
 import { KeyvFile } from 'keyv-file';
 import wordfilter from 'wordfilter';
@@ -37,14 +37,6 @@ let trackURL;
 doPost();
 
 /* --- */
-
-// Access Mastodon.
-function accessMastodon() {
-  return login({
-    url: 'https://botsin.space',
-    accessToken: process.env.MASTODON_ACCESS_TOKEN,
-  });
-};
 
 // Get SoundCloud OAuth access token, which is necessary for API calls.
 async function getSoundCloudAccessToken() {
@@ -340,7 +332,11 @@ async function postToMastodon(thePostToPost) {
   if (thePostToPost) {
     // console.log('NOW ATTEMPTING TO POST:', thePostToPost);
 
-    const masto = await accessMastodon();
+    // Access Mastodon.
+    const masto = createRestAPIClient({
+      url: 'https://botsin.space',
+      accessToken: process.env.MASTODON_ACCESS_TOKEN,
+    });
 
     // console.log('LOGGING IN TO MASTODON:', masto);
 
