@@ -17,11 +17,11 @@
     "post": "node bot.js"
   },
   "dependencies": {
-    "@google-cloud/translate": "^8.2.0",
-    "@keyvhq/core": "^2.1.0",
+    "@google-cloud/translate": "^8.3.0",
+    "@keyvhq/core": "^2.1.1",
     "keyv": "^4.5.4",
     "keyv-file": "^0.3.1",
-    "masto": "^6.7.2",
+    "masto": "^6.8.0",
     "wordfilter": "^0.2.6"
   },
   "devDependencies": {
