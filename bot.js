@@ -30,7 +30,7 @@ async function doPost() {
     return await postToMastodon(comment);
   }
   else {
-    console.error('Maybe next time.');
+    console.error('Could not post.');
   }
 }
 
@@ -335,7 +335,7 @@ async function checkIfEnglish(comment) {
 
 async function getCommentToPost() {
   if (!shouldTryToRequest) {
-    console.error('😔 Time to stop trying.');
+    console.error('Not trying anymore.');
     return false;
   }
 
