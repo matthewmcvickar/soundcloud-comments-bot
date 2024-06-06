@@ -13,6 +13,7 @@ wordfilter.addWords(extraWords);
 const maxTrackID = 784514266;
 
 // Initiate key-value store.
+let accessTokenIsSet = false;
 const keyv = new Keyv({
   store: new KeyvFile({
     filename: 'keys.json'
@@ -40,7 +41,10 @@ doPost();
 
 // Get SoundCloud OAuth access token, which is necessary for API calls.
 async function getSoundCloudAccessToken() {
-  if (await keyv.has('access_token')) {
+  if (accessTokenIsSet) {
+    return await keyv.get('access_token');
+  }
+  else if (await keyv.has('access_token')) {
     // console.log('Access token already exists.');
     return await refreshSoundCloudAccessToken();
   }
@@ -68,7 +72,7 @@ async function getNewSoundCloudAccessToken() {
   );
 
   if ( response.status !== 200 ) {
-    console.log('⚠️ ACCESS TOKEN REQUEST FAILED:');
+    console.log('⚠️ REQUEST FOR NEW ACCESS TOKEN FAILED:');
     console.log(response);
     return false;
   }
@@ -83,6 +87,7 @@ async function getNewSoundCloudAccessToken() {
   await keyv.set('refresh_token', responseData.refresh_token, expirationTimeInMilliseconds);
 
   const accessToken = await keyv.get('access_token');
+  accessTokenIsSet = true;
   // console.log('Getting newly created access token:', accessToken);
 
   return accessToken;
@@ -108,7 +113,7 @@ async function refreshSoundCloudAccessToken() {
   const responseData = await response.json();
 
   if ( response.status !== 200 ) {
-    console.log('⚠️ ACCESS TOKEN REQUEST FAILED:');
+    console.log('⚠️ REQUEST TO REFRESH ACCESS TOKEN FAILED:');
     console.log(response);
     return false;
   }
@@ -121,6 +126,7 @@ async function refreshSoundCloudAccessToken() {
   await keyv.set('refresh_token', responseData.refresh_token, expirationTimeInMilliseconds);
 
   const accessToken = await keyv.get('access_token');
+  accessTokenIsSet = true;
   // console.log('Getting refreshed access token:', accessToken);
 
   return accessToken;
