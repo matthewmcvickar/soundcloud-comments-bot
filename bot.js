@@ -1,3 +1,4 @@
+import * as core from '@actions/core';
 import * as dotenv from 'dotenv'; dotenv.config();
 import { createRestAPIClient } from 'masto';
 import Keyv from '@keyvhq/core';
@@ -30,7 +31,7 @@ async function doPost() {
     return await postToMastodon(comment);
   }
   else {
-    console.error('Could not post.');
+    core.setFailed('Could not post.');
   }
 }
 
