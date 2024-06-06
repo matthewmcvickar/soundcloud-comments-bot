@@ -45,6 +45,7 @@ async function getSoundCloudAccessToken() {
     return await refreshSoundCloudAccessToken();
   }
   else {
+    // console.log('Access token does not exist.');
     return await getNewSoundCloudAccessToken();
   }
 }
@@ -65,6 +66,13 @@ async function getNewSoundCloudAccessToken() {
       })
     }
   );
+
+  if ( response.status !== 200 ) {
+    console.log('⚠️ ACCESS TOKEN REQUEST FAILED:');
+    console.log(response);
+    return false;
+  }
+
   const responseData = await response.json();
 
   // console.log('Full request response:', responseData);
@@ -98,6 +106,12 @@ async function refreshSoundCloudAccessToken() {
     }
   );
   const responseData = await response.json();
+
+  if ( response.status !== 200 ) {
+    console.log('⚠️ ACCESS TOKEN REQUEST FAILED:');
+    console.log(response);
+    return false;
+  }
 
   // console.log('Full request response:', responseData);
   // console.log('Storing refreshed access token and new refresh token which expire in ' + responseData.expires_in/60 + ' minutes.') ;
