@@ -24,9 +24,14 @@ const keyv = new Keyv({
 async function doPost() {
   console.log('\n💫 🔍 🔊 💬');
   const comment = await getCommentToPost();
-  console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + trackURL);
-  console.log('\nTrying to post "' + comment + '" to Mastodon…');
-  return await postToMastodon(comment);
+  if (comment) {
+    console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + trackURL);
+    console.log('\nTrying to post "' + comment + '" to Mastodon…');
+    return await postToMastodon(comment);
+  }
+  else {
+    console.log('Maybe next time.');
+  }
 }
 
 // Keep track of how many attempts were made before a usable comment was found
@@ -192,6 +197,7 @@ async function getTrackThatHasComments() {
 
   if (!response) {
     console.log('Bad response.');
+    return false;
   }
 
   // Save the track URL for later reference.
@@ -329,7 +335,7 @@ async function checkIfEnglish(comment) {
 
 async function getCommentToPost() {
   if (!shouldTryToRequest) {
-    console.log('Time to stop trying.');
+    console.log('😔 Time to stop trying.');
     return false;
   }
 
@@ -343,13 +349,13 @@ async function getCommentToPost() {
     }
     else {
       // Try again if we failed to find a usable comment.
-      console.log('FAILED. TRYING AGAIN.');
+      console.log('FAILED.');
       return getCommentToPost();
     }
   }
   else {
     // Try again if we failed to find a track with comments.
-    console.log('FAILED. TRYING AGAIN.');
+    console.log('FAILED.');
     return getCommentToPost();
   }
 }
