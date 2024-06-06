@@ -31,6 +31,7 @@ async function doPost() {
 
 // Keep track of how many attempts were made before a usable comment was found
 // and which track URL provided the comment.
+let shouldTryToRequest = true;
 let attempts = 0;
 let trackURL;
 
@@ -136,6 +137,11 @@ async function doSoundCloudRequest(endpoint) {
   const accessToken = await getSoundCloudAccessToken();
   // console.log('Doing request with token ' + accessToken)
   // console.log(`Querying https://api.soundcloud.com/${endpoint}`)
+
+  if ( ! accessToken ) {
+    shouldTryToRequest = false;
+    return false;
+  }
 
   const response = await fetch(
     `https://api.soundcloud.com/${endpoint}`,
@@ -322,6 +328,11 @@ async function checkIfEnglish(comment) {
 }
 
 async function getCommentToPost() {
+  if (!shouldTryToRequest) {
+    console.log('Time to stop trying.');
+    return false;
+  }
+
   const trackID = await getTrackThatHasComments();
 
   if (trackID) {
