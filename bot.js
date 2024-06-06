@@ -30,7 +30,7 @@ async function doPost() {
     return await postToMastodon(comment);
   }
   else {
-    console.log('Maybe next time.');
+    console.error('Maybe next time.');
   }
 }
 
@@ -78,7 +78,7 @@ async function getNewSoundCloudAccessToken() {
   );
 
   if ( response.status !== 200 ) {
-    console.log('⚠️ REQUEST FOR NEW ACCESS TOKEN FAILED:');
+    console.error('⚠️ REQUEST FOR NEW ACCESS TOKEN FAILED:');
     console.log(response);
     return false;
   }
@@ -119,7 +119,7 @@ async function refreshSoundCloudAccessToken() {
   const responseData = await response.json();
 
   if ( response.status !== 200 ) {
-    console.log('⚠️ REQUEST TO REFRESH ACCESS TOKEN FAILED:');
+    console.error('⚠️ REQUEST TO REFRESH ACCESS TOKEN FAILED:');
     console.log(response);
     return false;
   }
@@ -196,7 +196,7 @@ async function getTrackThatHasComments() {
   // console.log('FULL API RESPONSE:\n', response);
 
   if (!response) {
-    console.log('Bad response.');
+    console.error('Bad response.');
     return false;
   }
 
@@ -204,13 +204,13 @@ async function getTrackThatHasComments() {
   trackURL = response.permalink_url;
 
   if (response.code === 401) {
-    console.log('Could not authorize.');
+    console.error('Could not authorize.');
   }
   else if (response.code === 404) {
-    console.log('No track exists at this ID.');
+    console.error('No track exists at this ID.');
   }
   else if (typeof response.code !== 'undefined') {
-    console.log('Error trying to retrieve track.');
+    console.error('Error trying to retrieve track.');
   }
   else {
     if (response.comment_count > 0) {
@@ -218,7 +218,7 @@ async function getTrackThatHasComments() {
       return response.id;
     }
     else {
-      console.log('Track has no comments!');
+      console.error('Track has no comments!');
     }
   }
 };
@@ -232,7 +232,7 @@ async function getCommentFromTrack(trackID) {
 
   // Exit
   if (!comments) {
-    console.log('FAILED: Request failed or the returned comments object was empty.')
+    console.error('FAILED: Request failed or the returned comments object was empty.')
     return false;
   }
 
@@ -246,7 +246,7 @@ async function getCommentFromTrack(trackID) {
     return chosenComment;
   }
   else {
-    console.log('FAILED: None of the comments were usable.');
+    console.error('FAILED: None of the comments were usable.');
     return false;
   }
 }
@@ -265,7 +265,7 @@ async function getUsableComments(comments) {
     console.log('ANALYZING: Checking if too short…');
 
     if (comment.length < 1) {
-      console.log('\tNOPE! Comment is too short.');
+      console.error('\tNOPE! Comment is too short.');
       continue;
     }
 
@@ -276,7 +276,7 @@ async function getUsableComments(comments) {
     console.log('ANALYZING: Checking if too long…');
 
     if (comment.length > 360) {
-      console.log('\tNOPE! Comment is too long');
+      console.error('\tNOPE! Comment is too long');
       continue;
     }
 
@@ -287,7 +287,7 @@ async function getUsableComments(comments) {
     console.log('ANALYZING: Checking for bad words…');
 
     if (wordfilter.blacklisted(comment)) {
-      console.log('\tNOPE! Comment is a reply, contains a bad word, or looks like spam.');
+      console.error('\tNOPE! Comment is a reply, contains a bad word, or looks like spam.');
       continue;
     }
 
@@ -303,7 +303,7 @@ async function getUsableComments(comments) {
       usableComments.push(comment);
     }
     else {
-      console.log('\tNOPE! Comment appears not to be written in English.')
+      console.error('\tNOPE! Comment appears not to be written in English.')
     }
   }
 
@@ -335,7 +335,7 @@ async function checkIfEnglish(comment) {
 
 async function getCommentToPost() {
   if (!shouldTryToRequest) {
-    console.log('😔 Time to stop trying.');
+    console.error('😔 Time to stop trying.');
     return false;
   }
 
@@ -349,13 +349,13 @@ async function getCommentToPost() {
     }
     else {
       // Try again if we failed to find a usable comment.
-      console.log('FAILED.');
+      console.error('FAILED.');
       return getCommentToPost();
     }
   }
   else {
     // Try again if we failed to find a track with comments.
-    console.log('FAILED.');
+    console.error('FAILED.');
     return getCommentToPost();
   }
 }
@@ -386,10 +386,10 @@ async function postToMastodon(thePostToPost) {
       // console.log('RESULT OF ATTEMPT TO POST:', status);
 
       if (status.id) {
-        console.log('\n✅ SUCCESSFULLY POSTED TO MASTODON:', status.url);
+        console.error('\n✅ SUCCESSFULLY POSTED TO MASTODON:', status.url);
       }
       else {
-        console.log('ERROR POSTING:', status);
+        console.error('ERROR POSTING:', status);
       }
     }
     else {
@@ -400,11 +400,11 @@ async function postToMastodon(thePostToPost) {
         }, 5000);
       }
       else {
-        console.log('ERROR: Could not post to Mastodon. Try again later.');
+        console.error('ERROR: Could not post to Mastodon. Try again later.');
       }
     }
   }
   else {
-    console.log('ERROR: No comment retrieved; cannot post.');
+    console.error('ERROR: No comment retrieved; cannot post.');
   }
 }
