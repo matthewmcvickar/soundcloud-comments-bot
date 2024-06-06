@@ -63,7 +63,7 @@ async function getSoundCloudAccessToken() {
 
 async function getNewSoundCloudAccessToken() {
   const response = await fetch(
-    'https://api.soundcloud.com/oauth2/token',
+    'https://secure.soundcloud.com/oauth/token',
     {
       method: 'POST',
       headers: {
@@ -102,7 +102,7 @@ async function getNewSoundCloudAccessToken() {
 
 async function refreshSoundCloudAccessToken() {
   const response = await fetch(
-    'https://api.soundcloud.com/oauth2/token',
+    'https://secure.soundcloud.com/oauth/token',
     {
       method: 'POST',
       headers: {
