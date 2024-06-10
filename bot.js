@@ -69,10 +69,9 @@ async function getNewSoundCloudAccessToken() {
       headers: {
         'accept': 'application/json; charset=utf-8',
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic Base64(' + process.env.SOUNDCLOUD_CLIENT_ID + ':' + process.env.SOUNDCLOUD_SECRET + ')',
       },
       body: new URLSearchParams({
-        'client_id': process.env.SOUNDCLOUD_CLIENT_ID,
-        'client_secret': process.env.SOUNDCLOUD_SECRET,
         'grant_type': 'client_credentials',
       })
     }
