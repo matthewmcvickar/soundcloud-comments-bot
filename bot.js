@@ -386,7 +386,7 @@ async function postToMastodon(thePostToPost) {
       // console.log('RESULT OF ATTEMPT TO POST:', status);
 
       if (status.id) {
-        console.error('\n✅ SUCCESSFULLY POSTED TO MASTODON:', status.url);
+        console.log('\n✅ SUCCESSFULLY POSTED TO MASTODON:', status.url);
       }
       else {
         console.error('ERROR POSTING:', status);
