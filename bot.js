@@ -297,8 +297,10 @@ async function getUsableComments(comments) {
 
     console.log('ANALYZING: Checking if written in English…');
 
-    if (await checkIfEnglish(comment)) {
-      console.log('\tOK! Comment appears to be written in English.');
+    let isEnglish = await checkIfEnglish(comment);
+
+    if (isEnglish) {
+      console.log('\tOK! Comment appears to be written in English. (Confidence level: ' + Math.round( isEnglish * 100 ) + '%)' );
       console.log('SUCCESS: All checks passed! Comment is usable: "' + comment + '"');
       usableComments.push(comment);
     }
@@ -327,9 +329,10 @@ async function checkIfEnglish(comment) {
 
   // console.log('Detections:', responseData.data.detections);
   // console.log('Detected language: ' + detectedLanguage);
+  const detectedLanguageConfidence = responseData.data.detections[0][0].confidence;
 
   if (detectedLanguage === 'en') {
-    return comment;
+    return detectedLanguageConfidence;
   }
 }
 
