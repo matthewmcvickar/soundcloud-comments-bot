@@ -19,6 +19,7 @@
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@google-cloud/translate": "^8.3.0",
+    "@atproto/api": "^0.13.19",
     "@keyvhq/core": "^2.1.1",
     "keyv": "^4.5.4",
     "keyv-file": "^0.3.1",

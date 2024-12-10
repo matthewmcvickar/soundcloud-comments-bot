@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv'; dotenv.config();
 import { createRestAPIClient } from 'masto';
 import Keyv from '@keyvhq/core';
 import { KeyvFile } from 'keyv-file';
+import { AtpAgent } from '@atproto/api';
 import wordfilter from 'wordfilter';
 import extraWords from './wordfilter-additions.js';
 
@@ -13,13 +14,33 @@ wordfilter.addWords(extraWords);
 // more than a billion tracks on SoundCloud; stick with a slightly smaller pool.
 const maxTrackID = 784514266;
 
-// Initiate key-value store.
-let accessTokenIsSet = false;
+// Initiate key-value store for SoundCloud.
+let soundcloudAccessTokenIsSet = false;
 const keyv = new Keyv({
   store: new KeyvFile({
     filename: 'keys.json'
   })
 });
+
+// Initiate BlueSky connection.
+const blueskyAgent = new AtpAgent({
+  service: 'https://bsky.social',
+})
+
+await blueskyAgent.login({
+  identifier: process.env.BLUESKY_USERNAME,
+  password: process.env.BLUESKY_PASSWORD
+});
+
+// console.log('CONNECTING TO BLUESKY:', blueskyAgent);
+
+// Initiate Mastodon connection.
+const mastodonAgent = createRestAPIClient({
+  url: 'https://mastodon.matthewmcvickar.com',
+  accessToken: process.env.MASTODON_ACCESS_TOKEN,
+});
+
+// console.log('CONNECTING TO MASTODON:', mastodonAgent);
 
 // The main process. Get a comment and post it.
 async function doPost() {
@@ -28,7 +49,14 @@ async function doPost() {
   if (comment) {
     console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + trackURL);
     console.log('\nTrying to post "' + comment + '" to Mastodon…');
-    return await postToMastodon(comment);
+
+    const postedToMastodon = await postToMastodon(comment);
+    const postedToBluesky = await postToBluesky(comment);
+
+    return {
+      postedToMastodon,
+      postedToBluesky
+    }
   }
   else {
     core.setFailed('Could not post.');
@@ -48,7 +76,7 @@ doPost();
 
 // Get SoundCloud OAuth access token, which is necessary for API calls.
 async function getSoundCloudAccessToken() {
-  if (accessTokenIsSet) {
+  if (soundcloudAccessTokenIsSet) {
     return await keyv.get('access_token');
   }
   else if (await keyv.has('access_token')) {
@@ -93,7 +121,7 @@ async function getNewSoundCloudAccessToken() {
   await keyv.set('refresh_token', responseData.refresh_token, expirationTimeInMilliseconds);
 
   const accessToken = await keyv.get('access_token');
-  accessTokenIsSet = true;
+  soundcloudAccessTokenIsSet = true;
   // console.log('Getting newly created access token:', accessToken);
 
   return accessToken;
@@ -132,7 +160,7 @@ async function refreshSoundCloudAccessToken() {
   await keyv.set('refresh_token', responseData.refresh_token, expirationTimeInMilliseconds);
 
   const accessToken = await keyv.get('access_token');
-  accessTokenIsSet = true;
+  soundcloudAccessTokenIsSet = true;
   // console.log('Getting refreshed access token:', accessToken);
 
   return accessToken;
@@ -363,51 +391,53 @@ async function getCommentToPost() {
   }
 }
 
-// Post the comment.
-let attemptsToPost = 0;
-
 async function postToMastodon(thePostToPost) {
-  attemptsToPost++;
+  if ( ! thePostToPost) {
+    console.error('ERROR: No comment retrieved; cannot post to Mastodon.');
+  }
 
-  if (thePostToPost) {
-    // console.log('NOW ATTEMPTING TO POST:', thePostToPost);
+  if ( ! mastodonAgent ) {
+    console.error('ERROR: Could not connect to Mastodon. Try again later.');
+  }
 
-    // Access Mastodon.
-    const masto = createRestAPIClient({
-      url: 'https://mastodon.matthewmcvickar.com',
-      accessToken: process.env.MASTODON_ACCESS_TOKEN,
-    });
+  // console.log('NOW ATTEMPTING TO POST TO MASTODON:', thePostToPost);
 
-    // console.log('LOGGING IN TO MASTODON:', masto);
+  const postedPost = await mastodonAgent.v1.statuses.create({
+    status: thePostToPost,
+    visibility: 'public'
+  });
 
-    if (masto) {
-      const status = await masto.v1.statuses.create({
-        status: thePostToPost,
-        visibility: 'public'
-      });
+  // console.log('RESULT OF ATTEMPT TO POST TO MASTODON:', postedPost);
 
-      // console.log('RESULT OF ATTEMPT TO POST:', status);
-
-      if (status.id) {
-        console.log('\n✅ SUCCESSFULLY POSTED TO MASTODON:', status.url);
-      }
-      else {
-        console.error('ERROR POSTING:', status);
-      }
-    }
-    else {
-      // If we haven't already tried ten times, wait a bit and try again.
-      if (attemptsToPost < 10) {
-        setTimeout(() => {
-          postToMastodon(thePostToPost);
-        }, 5000);
-      }
-      else {
-        console.error('ERROR: Could not post to Mastodon. Try again later.');
-      }
-    }
+  if (postedPost.id) {
+    console.log('\n✅ SUCCESSFULLY POSTED TO MASTODON:', postedPost.url);
   }
   else {
-    console.error('ERROR: No comment retrieved; cannot post.');
+    console.error('ERROR POSTING TO MASTODON:', postedPost);
+  }
+}
+
+async function postToBluesky(thePostToPost) {
+  if ( ! thePostToPost) {
+    console.error('ERROR: No comment retrieved; cannot post to Bluesky.');
+  }
+
+  if ( ! blueskyAgent ) {
+    console.error('ERROR: Could not connect to Bluesky. Try again later.');
+  }
+
+  // console.log('NOW ATTEMPTING TO POST TO BLUESKY:', thePostToPost);
+
+  const postedPost = await blueskyAgent.post({
+    text: thePostToPost
+  });
+
+  // console.log('RESULT OF ATTEMPT TO POST TO BLUESKY:', postedPost);
+
+  if (postedPost.uri) {
+    console.log('\n✅ SUCCESSFULLY POSTED TO BLUESKY:', postedPost.uri);
+  }
+  else {
+    console.error('ERROR POSTING TO BLUESKY:', postedPost);
   }
 }

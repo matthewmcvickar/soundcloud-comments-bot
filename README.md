@@ -5,7 +5,9 @@ A bot that posts random comments from SoundCloud.
 Currently posting several times a day to Mastodon and Bluesky. (It used to post
 to Twitter, but I don't use Twitter anymore and neither do my bots.)
 
-🔊 💬 🤖 &rarr; **[@soundcloudsaid on Mastodon](https://mastodon.matthewmcvickar.com/@soundcloudsaid)**
+🔊 💬 🤖 🐘 &rarr; **[@soundcloudsaid on Bluesky](https://bsky.app/profile/soundcloudsaid.bsky.social)**
+
+🔊 💬 🤖 ☁️ &rarr; **[@soundcloudsaid on Mastodon](https://mastodon.matthewmcvickar.com/@soundcloudsaid)**
 
 ---
 
