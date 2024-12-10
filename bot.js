@@ -374,7 +374,7 @@ async function postToMastodon(thePostToPost) {
 
     // Access Mastodon.
     const masto = createRestAPIClient({
-      url: 'https://botsin.space',
+      url: 'https://mastodon.matthewmcvickar.com',
       accessToken: process.env.MASTODON_ACCESS_TOKEN,
     });
 
