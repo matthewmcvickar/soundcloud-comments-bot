@@ -5,7 +5,7 @@ A bot that posts random comments from SoundCloud.
 Currently posting several times a day to Mastodon. (It used to post to Twitter,
 but I don't use Twitter anymore and neither do my bots.)
 
-🔊 💬 🤖 &rarr; **[@soundcloudsaid on Mastodon](https://botsin.space/@soundcloudsaid)**
+🔊 💬 🤖 &rarr; **[@soundcloudsaid on Mastodon](https://mastodon.matthewmcvickar.com/@soundcloudsaid)**
 
 ---
 
@@ -76,4 +76,4 @@ resources:
 
 ## Afterword
 
-This is my third bot. ([@obliquestions](https://botsin.space/@obliquestions) and [@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
+This is my third bot. ([@obliquestions](https://mastodon.matthewmcvickar.com/@obliquestions) and [@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
