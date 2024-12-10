@@ -2,8 +2,8 @@
 
 A bot that posts random comments from SoundCloud.
 
-Currently posting several times a day to Mastodon. (It used to post to Twitter,
-but I don't use Twitter anymore and neither do my bots.)
+Currently posting several times a day to Mastodon and Bluesky. (It used to post
+to Twitter, but I don't use Twitter anymore and neither do my bots.)
 
 🔊 💬 🤖 &rarr; **[@soundcloudsaid on Mastodon](https://mastodon.matthewmcvickar.com/@soundcloudsaid)**
 
@@ -44,7 +44,9 @@ potential comments rigorously. I filter out the following:
 - replies and mentions (anything including the `@` symbol)
 - anything pointing to another user or track on SoundCloud
 
-I also filter out any comment including any of the [bad words listed in Darius Kazemi's wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
+I also filter out any comment including any of the [bad words listed in Darius
+Kazemi's
+wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
 
 Finally, I use the [Google Translate API](https://cloud.google.com/translate) to
 make sure the comment is English. The automated check is imperfect for checking
@@ -72,8 +74,13 @@ resources:
 
 - [Justin Falcone](https://justinfalcone.com/) provided code review.
 
-- [Twitter user @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704) also had this idea in July of 2015. (This tweet and account have since been deleted.)
+- [Twitter user
+  @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704)
+  also had this idea in July of 2015. (This tweet and account have since been
+  deleted.)
 
 ## Afterword
 
-This is my third bot. ([@obliquestions](https://mastodon.matthewmcvickar.com/@obliquestions) and [@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
+This is my third bot.
+([@obliquestions](https://mastodon.matthewmcvickar.com/@obliquestions) and
+[@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
