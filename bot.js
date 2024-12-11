@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as dotenv from 'dotenv'; dotenv.config();
 import { createRestAPIClient } from 'masto';
-import Keyv from '@keyvhq/core';
+import Keyv from 'keyv';
 import { KeyvFile } from 'keyv-file';
 import { AtpAgent } from '@atproto/api';
 import wordfilter from 'wordfilter';
