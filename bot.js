@@ -25,22 +25,22 @@ const keyv = new Keyv({
 // Initiate BlueSky connection.
 const blueskyAgent = new AtpAgent({
   service: 'https://bsky.social',
-})
+});
 
+// TODO: Use OAuth-based session management instead.
+//       https://www.npmjs.com/package/@atproto/oauth-client-node
 await blueskyAgent.login({
   identifier: process.env.BLUESKY_USERNAME,
   password: process.env.BLUESKY_PASSWORD
 });
 
-// console.log('CONNECTING TO BLUESKY:', blueskyAgent);
-
 // Initiate Mastodon connection.
-const mastodonAgent = createRestAPIClient({
+const mastodonConnection = createRestAPIClient({
   url: 'https://mastodon.matthewmcvickar.com',
   accessToken: process.env.MASTODON_ACCESS_TOKEN,
 });
 
-// console.log('CONNECTING TO MASTODON:', mastodonAgent);
+// console.log('CONNECTING TO MASTODON:', mastodonConnection);
 
 // The main process. Get a comment and post it.
 async function doPost() {
@@ -396,13 +396,13 @@ async function postToMastodon(thePostToPost) {
     console.error('ERROR: No comment retrieved; cannot post to Mastodon.');
   }
 
-  if ( ! mastodonAgent ) {
+  if ( ! mastodonConnection ) {
     console.error('ERROR: Could not connect to Mastodon. Try again later.');
   }
 
   // console.log('NOW ATTEMPTING TO POST TO MASTODON:', thePostToPost);
 
-  const postedPost = await mastodonAgent.v1.statuses.create({
+  const postedPost = await mastodonConnection.v1.statuses.create({
     status: thePostToPost,
     visibility: 'public'
   });
@@ -422,7 +422,7 @@ async function postToBluesky(thePostToPost) {
     console.error('ERROR: No comment retrieved; cannot post to Bluesky.');
   }
 
-  if ( ! blueskyAgent ) {
+  if ( ! blueskyAgent.did ) {
     console.error('ERROR: Could not connect to Bluesky. Try again later.');
   }
 
@@ -435,7 +435,15 @@ async function postToBluesky(thePostToPost) {
   // console.log('RESULT OF ATTEMPT TO POST TO BLUESKY:', postedPost);
 
   if (postedPost.uri) {
-    console.log('\n✅ SUCCESSFULLY POSTED TO BLUESKY:', postedPost.uri);
+    // Build a bsky.app URL from the returned object.
+    // https://github.com/bluesky-social/atproto/discussions/2523
+    // https://regex101.com/r/oNdt57/1
+    let uriRegex = postedPost.uri.match(/at:\/\/([A-Za-z0-9:]+)\/[a-z.]+\/([A-Za-z0-9]+)/)
+    let did = uriRegex[1];
+    let rkey = uriRegex[2];
+    let postUrl = 'https://bsky.app/profile/' + did + '/post/' + rkey
+
+    console.log('\n✅ SUCCESSFULLY POSTED TO BLUESKY:', postUrl);
   }
   else {
     console.error('ERROR POSTING TO BLUESKY:', postedPost);
