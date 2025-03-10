@@ -79,6 +79,7 @@ export default [
   'rape',
   'raping',
   'gay',
+  'hoe',
   'nig',
   'igg',
   'icc',
