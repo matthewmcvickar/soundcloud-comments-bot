@@ -18,12 +18,12 @@
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@google-cloud/translate": "^8.5.0",
-    "@atproto/api": "^0.13.19",
-    "@keyvhq/core": "^2.1.1",
-    "keyv": "^5.2.1",
-    "keyv-file": "^5.0.3",
-    "masto": "^6.10.1",
+    "@google-cloud/translate": "^8.5.1",
+    "@atproto/api": "^0.14.9",
+    "@keyvhq/core": "^2.1.7",
+    "keyv": "^5.3.1",
+    "keyv-file": "^5.1.2",
+    "masto": "^6.10.3",
     "wordfilter": "^0.2.6"
   },
   "devDependencies": {
