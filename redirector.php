@@ -138,7 +138,7 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 			0, Math.ceil((countdownEnd - Date.now()) / 1000)
 		);
 
-		countdownContainer.textContent = `in ${timeRemaining} seconds.`;
+		countdownContainer.textContent = timeRemaining === 1 ? `in ${timeRemaining} second.` : `in ${timeRemaining} seconds.`;
 
 		if (timeRemaining === 0) {
 			countdownContainer.textContent = 'now!';
