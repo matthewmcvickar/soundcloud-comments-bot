@@ -1,4 +1,6 @@
 <?php
+// This file lives at https://via.mattmcv.com/index.php.
+
 if ( empty( $_REQUEST['url'] ) ) {
   echo 'Nope!';
   die();
@@ -37,7 +39,7 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 		font-size: 16px;
 		line-height: 1.4;
 		padding: 12px;
-		max-width: 600px;
+		max-width: 700px;
 	}
 
 	h1 {
@@ -57,11 +59,16 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 		font-size: 18px;
 		font-weight: bold;
 		word-break: break-all;
+
+		&.canceled {
+			text-decoration: line-through;
+			color: #999;
+		}
 	}
 
 	p.redirecting,
 	p.url {
-		margin-bottom: 0;
+		margin-bottom: 0.25rem;
 	}
 
 	button {
@@ -73,6 +80,7 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 		font-size: 16px;
 		font-weight: bold;
 		user-select: none;
+		cursor: pointer;
 
 		&:hover {
 			transform: scale(1.05);
@@ -83,8 +91,24 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 		}
 
 		&:disabled {
+			cursor: default;
 			opacity: 0.5;
 			pointer-events: none;
+		}
+	}
+
+	a {
+		color: #0099FF;
+
+		@media (hover: hover) {
+			&:hover {
+				color: darkblue;
+			}
+		}
+
+		&:active,
+		&:visited {
+			color: purple;
 		}
 	}
 	</style>
@@ -94,7 +118,7 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 	<p class="redirecting">Redirecting to</p>
 	<p class="url"><a href="<?php echo $url_with_utm_params; ?>"><?php echo $url; ?></a></p>
 	<p class="countdown">in 3 seconds</p>
-	<p><button class="go" onclick="window.location.href='<?php $url_with_utm_params; ?>'">✅ Go now</button></p>
+	<p><button class="go" onclick="window.location.href='<?php echo $url_with_utm_params; ?>'">✅ Go now!</button></p>
 	<p><button class="stop">❌ Stop redirect</button></p>
 	<p>This redirector exists only to prevent preview cards from appearing in <a href="https://mastodon.matthewmcvickar.com/@soundcloudsaid_source">@soundcloudsaid_source</a> posts. I don't want to show usernames, titles, images, or descriptions from SoundCloud uploads without filtering them, and I can&rsquo;t reliably filter them.</p>
 
@@ -112,11 +136,11 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 			0, Math.ceil((countdownEnd - Date.now()) / 1000)
 		);
 
-		countdownContainer.textContent = `in ${timeRemaining} seconds`;
+		countdownContainer.textContent = `in ${timeRemaining} seconds.`;
 
-		if (secondsLeft === 0) {
-			clearInterval(countdownUpdater);
+		if (timeRemaining === 0) {
 			countdownContainer.textContent = 'now!';
+			clearInterval(countdownUpdater);
 		}
 	}, 250);
 
@@ -129,8 +153,8 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 		event.target.disabled = true;
 		event.target.textContent = '❌ Redirect stopped!';
 
-		document.querySelector('.redirecting').style.textDecoration = 'line-through';
-		document.querySelector('.countdown').style.textDecoration = 'line-through';
+		document.querySelector('.redirecting').classList.add('canceled');
+		document.querySelector('.countdown').classList.add('canceled');
 	})
 	</script>
 </body>
