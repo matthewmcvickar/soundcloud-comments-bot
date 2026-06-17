@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv'; dotenv.config();
 import { createRestAPIClient } from 'masto';
 import Keyv from 'keyv';
 import { KeyvFile } from 'keyv-file';
-import { AtpAgent } from '@atproto/api';
+import { AtpAgent, RichText } from '@atproto/api';
 import wordfilter from 'wordfilter';
 import extraWords from './wordfilter-additions.js';
 
@@ -22,36 +22,51 @@ const keyv = new Keyv({
   })
 });
 
-// Initiate BlueSky connection.
-const blueskyAgent = new AtpAgent({
+// Initiate BlueSky connections.
+const soundcloudsaidBlueskyAgent = new AtpAgent({
+  service: 'https://bsky.social',
+});
+
+const soundcloudsaidsourceBlueskyAgent = new AtpAgent({
   service: 'https://bsky.social',
 });
 
 // TODO: Use OAuth-based session management instead.
-//       https://www.npmjs.com/package/@atproto/oauth-client-node
-await blueskyAgent.login({
-  identifier: process.env.BLUESKY_USERNAME,
-  password: process.env.BLUESKY_PASSWORD
+// https://www.npmjs.com/package/@atproto/oauth-client-node
+await soundcloudsaidBlueskyAgent.login({
+  identifier: process.env.SOUNDCLOUDSAID_BLUESKY_USERNAME,
+  password: process.env.SOUNDCLOUDSAID_BLUESKY_PASSWORD
 });
 
-// Initiate Mastodon connection.
-const mastodonConnection = createRestAPIClient({
+await soundcloudsaidsourceBlueskyAgent.login({
+  identifier: process.env.SOUNDCLOUDSAIDSOURCE_BLUESKY_USERNAME,
+  password: process.env.SOUNDCLOUDSAIDSOURCE_BLUESKY_PASSWORD
+});
+
+// Initiate Mastodon connections.
+const soundcloudsaidMastodonConnection = createRestAPIClient({
   url: 'https://mastodon.matthewmcvickar.com',
-  accessToken: process.env.MASTODON_ACCESS_TOKEN,
+  accessToken: process.env.SOUNDCLOUDSAID_MASTODON_ACCESS_TOKEN,
 });
 
-// console.log('CONNECTING TO MASTODON:', mastodonConnection);
+const soundcloudsaidsourceMastodonConnection = createRestAPIClient({
+  url: 'https://mastodon.matthewmcvickar.com',
+  accessToken: process.env.SOUNDCLOUDSAIDSOURCE_MASTODON_ACCESS_TOKEN,
+});
+
+// console.log('CONNECTING TO MASTODON:', soundcloudsaidMastodonConnection);
+// console.log('CONNECTING TO MASTODON... AGAIN:', soundcloudsaidsourceMastodonConnection);
 
 // The main process. Get a comment and post it.
 async function doPost() {
   console.log('\n💫 🔍 🔊 💬');
   const comment = await getCommentToPost();
   if (comment) {
-    console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + trackURL);
+    console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + track.permalink_url);
     console.log('\nTrying to post "' + comment + '" to Mastodon…');
 
-    const postedToMastodon = await postToMastodon(comment);
-    const postedToBluesky = await postToBluesky(comment);
+    const postedToMastodon = await soundcloudsaid_postToMastodon(comment);
+    const postedToBluesky = await soundcloudsaid_postToBluesky(comment);
 
     return {
       postedToMastodon,
@@ -64,10 +79,10 @@ async function doPost() {
 }
 
 // Keep track of how many attempts were made before a usable comment was found
-// and which track URL provided the comment.
+// and which track provided the comment.
 let shouldTryToRequest = true;
 let attempts = 0;
-let trackURL;
+let track;
 
 // Post!
 doPost();
@@ -228,8 +243,8 @@ async function getTrackThatHasComments() {
     return false;
   }
 
-  // Save the track URL for later reference.
-  trackURL = response.permalink_url;
+  // Save the track for later reference.
+  track = response;
 
   if (response.code === 401) {
     console.error('Could not authorize.');
@@ -391,61 +406,211 @@ async function getCommentToPost() {
   }
 }
 
-async function postToMastodon(thePostToPost) {
+// Build reply post with info about the upload.
+function getReplyPost() {
+  const commentCount = track.comment_count > 1 ? integerToWord( track.comment_count ) + ' comments' : 'one comment';
+  const likeCount    = track.favoritings_count > 1 ? integerToWord( track.favoritings_count ) + ' likes' : 'one like';
+  const playCount    = track.playback_count > 1 ? integerToWord( track.playback_count ) + ' plays' : 'one play';
+  const duration     = millisecondsToDuration(track.duration);
+  const date         = formatDateCreated(track.created_at);
+
+  // Get permalink without query (UTM params) so the URL isn't as long.
+  let url = new URL(track.permalink_url);
+  url = 'https://via.mattmcv.com/?url=' + encodeURIComponent(url.origin + url.pathname);
+
+  const replyPost = `After ${attempts} attempts, this comment was found on an upload from ${date} with ${playCount}, ${likeCount}, and ${commentCount}.\n\n${url}`;
+
+  return replyPost;
+}
+
+async function soundcloudsaid_postToMastodon(thePostToPost) {
   if ( ! thePostToPost) {
-    console.error('ERROR: No comment retrieved; cannot post to Mastodon.');
+    console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR: No comment retrieved; cannot post to Mastodon.');
   }
 
-  if ( ! mastodonConnection ) {
-    console.error('ERROR: Could not connect to Mastodon. Try again later.');
+  if ( ! soundcloudsaidMastodonConnection ) {
+    console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR: Could not connect to Mastodon. Try again later.');
   }
 
-  // console.log('NOW ATTEMPTING TO POST TO MASTODON:', thePostToPost);
+  console.log('❰SOUNDCLOUDSAID❱ ⚡️ NOW ATTEMPTING TO POST TO MASTODON:', thePostToPost);
 
-  const postedPost = await mastodonConnection.v1.statuses.create({
+  const postedPost = await soundcloudsaidMastodonConnection.v1.statuses.create({
     status: thePostToPost,
-    visibility: 'public'
+    visibility: 'public',
   });
 
-  // console.log('RESULT OF ATTEMPT TO POST TO MASTODON:', postedPost);
+  // console.log('❰SOUNDCLOUDSAID❱ 📋 FULL RESPONSE OF ATTEMPT TO POST TO MASTODON:', postedPost);
 
   if (postedPost.id) {
-    console.log('\n✅ SUCCESSFULLY POSTED TO MASTODON:', postedPost.url);
+    console.log('\n❰SOUNDCLOUDSAID❱ ✅ SUCCESSFULLY POSTED TO MASTODON:', postedPost.url);
+
+    return await soundcloudsaidsource_postToMastodon(postedPost)
   }
   else {
-    console.error('ERROR POSTING TO MASTODON:', postedPost);
+    console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR POSTING TO MASTODON:', postedPost);
   }
 }
 
-async function postToBluesky(thePostToPost) {
+async function soundcloudsaid_postToBluesky(thePostToPost) {
   if ( ! thePostToPost) {
-    console.error('ERROR: No comment retrieved; cannot post to Bluesky.');
+    console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR: No comment retrieved; cannot post to Bluesky.');
   }
 
-  if ( ! blueskyAgent.did ) {
-    console.error('ERROR: Could not connect to Bluesky. Try again later.');
+  if ( ! soundcloudsaidBlueskyAgent.did ) {
+    console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR: Could not connect to Bluesky. Try again later.');
   }
 
-  // console.log('NOW ATTEMPTING TO POST TO BLUESKY:', thePostToPost);
+  console.log('❰SOUNDCLOUDSAID❱ ⚡️ NOW ATTEMPTING TO POST TO BLUESKY:', thePostToPost);
 
-  const postedPost = await blueskyAgent.post({
+  const postedPost = await soundcloudsaidBlueskyAgent.post({
     text: thePostToPost
   });
 
-  // console.log('RESULT OF ATTEMPT TO POST TO BLUESKY:', postedPost);
+  // console.log('❰SOUNDCLOUDSAID❱ 📋 FULL RESPONSE OF ATTEMPT TO POST TO BLUESKY:', postedPost);
 
   if (postedPost.uri) {
-    // Build a bsky.app URL from the returned object.
-    // https://github.com/bluesky-social/atproto/discussions/2523
-    // https://regex101.com/r/oNdt57/1
-    let uriRegex = postedPost.uri.match(/at:\/\/([A-Za-z0-9:]+)\/[a-z.]+\/([A-Za-z0-9]+)/)
-    let did = uriRegex[1];
-    let rkey = uriRegex[2];
-    let postUrl = 'https://bsky.app/profile/' + did + '/post/' + rkey
+    console.log('\n❰SOUNDCLOUDSAID❱ ✅ SUCCESSFULLY POSTED TO BLUESKY:', getBskyURL( postedPost.uri ));
 
-    console.log('\n✅ SUCCESSFULLY POSTED TO BLUESKY:', postUrl);
+    return await soundcloudsaidsource_postToBluesky(postedPost);
   }
   else {
-    console.error('ERROR POSTING TO BLUESKY:', postedPost);
+    console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR POSTING TO BLUESKY:', postedPost);
   }
+}
+
+async function soundcloudsaidsource_postToMastodon(originalPost) {
+  console.log('❰SOUNDCLOUDSAID_SOURCE❱ ⚡️ NOW ATTEMPTING TO POST TO MASTODON.');
+
+  const postedPost = await soundcloudsaidsourceMastodonConnection.v1.statuses.create({
+    status: getReplyPost(),
+    visibility: 'public',
+    inReplyToId: originalPost.id,
+  });
+
+  // console.log('❰SOUNDCLOUDSAID_SOURCE❱ 📋 FULL RESPONSE OF ATTEMPT TO POST TO MASTODON:', postedPost);
+
+  if (postedPost.id) {
+    console.log('\n❰SOUNDCLOUDSAID_SOURCE❱ ✅ SUCCESSFULLY POSTED TO MASTODON:', postedPost.url);
+  }
+  else {
+    console.error('❰SOUNDCLOUDSAID_SOURCE❱ 🚫 ERROR POSTING TO MASTODON:', postedPost);
+  }
+}
+
+async function soundcloudsaidsource_postToBluesky(originalPost) {
+  console.log('❰SOUNDCLOUDSAID_SOURCE❱ ⚡️ NOW ATTEMPTING TO POST TO BLUESKY.');
+
+  // The 'root' and 'parent' post are the same here.
+  // https://atproto.com/blog/create-post#replies-quote-posts-and-embeds
+
+  // Detect the clickable URL in the post.
+  const replyPost = new RichText({
+    text: getReplyPost()
+  });
+  await replyPost.detectFacets(soundcloudsaidsourceBlueskyAgent);
+
+  const postedPost = await soundcloudsaidsourceBlueskyAgent.post({
+    text: replyPost.text,
+    facets: replyPost.facets,
+    reply: {
+      root: {
+        uri: originalPost.uri,
+        cid: originalPost.cid,
+      },
+      parent: {
+        uri: originalPost.uri,
+        cid: originalPost.cid,
+      },
+    }
+  });
+
+  // console.log('❰SOUNDCLOUDSAID_SOURCE❱ 📋 FULL RESPONSE OF ATTEMPT TO POST TO BLUESKY:', postedPost);
+
+  if (postedPost.uri) {
+    console.log('\n❰SOUNDCLOUDSAID_SOURCE❱ ✅ SUCCESSFULLY POSTED TO BLUESKY:', getBskyURL( postedPost.uri ));
+  }
+  else {
+    console.error('❰SOUNDCLOUDSAID_SOURCE❱ 🚫 ERROR POSTING TO BLUESKY:', postedPost);
+  }
+}
+
+// Build a bsky.app URL from the returned object.
+// Explanation: https://github.com/bluesky-social/atproto/discussions/2523
+// Regex in action: https://regex101.com/r/oNdt57/1
+function getBskyURL( uri ) {
+  let uriRegex = uri.match(/at:\/\/([A-Za-z0-9:]+)\/[a-z.]+\/([A-Za-z0-9]+)/)
+  let did = uriRegex[1];
+  let rkey = uriRegex[2];
+  return 'https://bsky.app/profile/' + did + '/post/' + rkey;
+}
+
+// Turn a digit into a word if it's under 10.
+function integerToWord(integer) {
+  if (!integer) {
+    return 0;
+  }
+
+  if (integer > 9) {
+    return integer.toLocaleString();
+  }
+
+  switch(integer) {
+    case 1:
+      return 'one';
+      break;
+    case 2:
+      return 'two';
+      break;
+    case 3:
+      return 'three';
+      break;
+    case 4:
+      return 'four';
+      break;
+    case 5:
+      return 'five';
+      break;
+    case 6:
+      return 'six';
+      break;
+    case 7:
+      return 'seven';
+      break;
+    case 8:
+      return 'eight';
+      break;
+    case 9:
+      return 'nine';
+      break;
+  }
+}
+
+// Turn a number of milliseconds into a duration like '4:14.'
+function millisecondsToDuration(milliseconds) {
+  let minutes = Math.floor(milliseconds / 60000);
+  let seconds = ((milliseconds % 60000) / 1000).toFixed(0);
+  return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+}
+
+// Turn a date like '1985/04/14 04:14:14 +0000' into 'April 14, 1985.'
+function formatDateCreated(dateString) {
+  const date = new Date(dateString);
+  const day  = date.getDate();
+
+  // If day 11, 12, or 13, make the suffix 'th.' Otherwise, every number ending
+  // in a 1 is a 'st,' in a 2 is a 'nd,' in a 3 is a 'rd,' and every other
+  // number ends in a 'th.'
+  let suffix;
+  if (day % 100 >= 11 && day % 100 <= 13) {
+    suffix = 'th';
+  } else {
+    switch (day % 10) {
+      case 1:  suffix = 'st'; break;
+      case 2:  suffix = 'nd'; break;
+      case 3:  suffix = 'rd'; break;
+      default: suffix = 'th';
+    }
+  }
+
+  return `${date.toLocaleString('en-US', { month: 'long' })} ${day}${suffix}, ${date.getFullYear()}`;
 }
