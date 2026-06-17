@@ -82,8 +82,10 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 		user-select: none;
 		cursor: pointer;
 
-		&:hover {
-			transform: scale(1.05);
+		@media (hover: hover) {
+			&:hover {
+				transform: scale(1.05);
+			}
 		}
 
 		&:active {
