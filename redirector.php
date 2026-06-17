@@ -8,6 +8,8 @@ if ( empty( $_REQUEST['url'] ) ) {
 
 $url = htmlspecialchars( urldecode( $_REQUEST['url'] ) );
 $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_source=id_262882';
+
+$countdown_seconds = 3;
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,13 +121,13 @@ $url_with_utm_params = $url . '?utm_medium=api&utm_campaign=social_sharing&utm_s
 	<h1>@soundcloudsaid Redirector</h1>
 	<p class="redirecting">Redirecting to</p>
 	<p class="url"><a href="<?php echo $url_with_utm_params; ?>"><?php echo $url; ?></a></p>
-	<p class="countdown">in 3 seconds</p>
+	<p class="countdown">in <?php echo $countdown_seconds; ?> seconds.</p>
 	<p><button class="go" onclick="window.location.href='<?php echo $url_with_utm_params; ?>'">✅ Go now!</button></p>
 	<p><button class="stop">❌ Stop redirect</button></p>
 	<p>This redirector exists only to prevent preview cards from appearing in <a href="https://mastodon.matthewmcvickar.com/@soundcloudsaid_source">@soundcloudsaid_source</a> posts. I don't want to show usernames, titles, images, or descriptions from SoundCloud uploads without filtering them, and I can&rsquo;t reliably filter them.</p>
 
 	<script>
-	const secondsToWait = 3; // Seconds, that is.
+	const secondsToWait = <?php echo $countdown_seconds; ?>; // Seconds, that is.
 	const countdownContainer = document.querySelector('.countdown');
 	const countdownEnd = Date.now() + (secondsToWait * 1000); // 3 seconds
 
