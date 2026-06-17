@@ -1,13 +1,15 @@
-# SoundCloud Comments Bot
+# SoundCloud Comments Bot AKA @soundcloudsaid
 
 A bot that posts random comments from SoundCloud.
 
-Currently posting several times a day to Mastodon and Bluesky. (It used to post
-to Twitter, but I don't use Twitter anymore and neither do my bots.)
+Currently posting several times a day to Mastodon and Bluesky.
 
-🔊 💬 🤖 🐘 &rarr; **[@soundcloudsaid on Mastodon](https://mastodon.matthewmcvickar.com/@soundcloudsaid)**
+## The Bots
 
-🔊 💬 🤖 ☁️ &rarr; **[@soundcloudsaid on Bluesky](https://bsky.app/profile/soundcloudsaid.bsky.social)**
+- **[@soundcloudsaid on Mastodon][bot-on-mastodon]**
+- **[@soundcloudsaid_source on Mastodon][source-bot-on-mastodon]**
+- **[@soundcloudsaid on Bluesky][bot-on-bluesky]**
+- **[@soundcloudsaid-src on Bluesky][source-bot-on-bluesky]**
 
 ---
 
@@ -32,7 +34,10 @@ schedule throughout the day. That script does the following:
 2. Check all comments using the criteria listed in the 'Filtering Comments'
    section below. If none are usable, go back to step one.
 
-3. Randomly select one of the comments that is usable and post it!
+3. Randomly select one of the comments that is usable and post it.
+
+4. Reply to the posted comment with some stats and a link to the original
+   SoundCloud comment where the comment was found.
 
 ### Filtering Comments
 
@@ -47,14 +52,28 @@ potential comments rigorously. I filter out the following:
 - anything pointing to another user or track on SoundCloud
 
 I also filter out any comment including any of the [bad words listed in Darius
-Kazemi's
-wordfilter](https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json).
+Kazemi's wordfilter][wordfilter]. (And I added [many more words][more-words].)
 
-Finally, I use the [Google Translate API](https://cloud.google.com/translate) to
+Finally, I use the [Google Translate API][google-translate] to
 make sure the comment is English. The automated check is imperfect for checking
 informal, comment-style language, but helps discard most non-English comments.
 The primary reason for this filter is preventing abusive language appearing in
 my bot in a language that I don't speak and thus cannot filter out.
+
+### Sharing the Source *(New as of June 2026!)*
+
+As of June 17, 2026, every time this bot posts, it also posts a reply from a
+companion bot that shares some info about the SoundCloud upload from which the
+comment was drawn (the date of the upload, the number of likes, comments, and
+plays, etc.) and provides a link to the upload on SoundCloud.
+
+I do a lot of filtering of the content for this bot to make sure it behaves, but
+I can't do the same for the names, titles, images, and content of the uploads on
+SoundCloud. That's one of the reasons I didn't provide source links; the context
+of the comment could be bad. I've settled on providing only metadata about the
+upload in the post, and then a link that goes through a redirect page in order
+to prevent a rich website preview from appearing in the post (see
+[`redirector.php`](./redirector.php)).
 
 ### How It Used to Work
 
@@ -74,15 +93,26 @@ bot to use the process described above.
 I could not have created this bot without help from the following people and
 resources:
 
-- [Justin Falcone](https://justinfalcone.com/) provided code review.
+- [Justin Falcone][justin-falcone] provided code review.
 
-- [Twitter user
-  @berlindisaster](https://twitter.com/berlindisaster/status/621943270726344704)
-  also had this idea in July of 2015. (This tweet and account have since been
-  deleted.)
+- [Twitter user @berlindisaster][parallel-invention] also had this idea in July
+  of 2015. (This tweet and account have since been deleted.)
 
 ## Afterword
 
-This is my third bot.
-([@obliquestions](https://mastodon.matthewmcvickar.com/@obliquestions) and
-[@novelcompounds](https://twitter.com/novelcompounds) are the first two.)
+This is my third bot. ([@obliquestions][obliquestions-bot] and
+[@novelcompounds][novel-compounds-bot] are the first two.)
+
+<!-- *** -->
+
+[bot-on-mastodon]: https://mastodon.matthewmcvickar.com/@soundcloudsaid
+[source-bot-on-mastodon]: https://mastodon.matthewmcvickar.com/@soundcloudsaid_source
+[bot-on-bluesky]: https://bsky.app/profile/soundcloudsaid.bsky.social
+[source-bot-on-bluesky]: https://bsky.app/profile/soundcloudsaid-src.bsky.social
+[wordfilter]: https://github.com/dariusk/wordfilter/blob/master/lib/badwords.json
+[more-words]: ./wordfilter-additions.js
+[google-translate]: https://cloud.google.com/translate
+[justin-falcone]: https://justinfalcone.com/
+[parallel-invention]: https://twitter.com/berlindisaster/status/621943270726344704
+[obliquestions-bot]: https://mastodon.matthewmcvickar.com/@obliquestions
+[novel-compounds-bot]: https://github.com/matthewmcvickar/novel-compounds-bot
