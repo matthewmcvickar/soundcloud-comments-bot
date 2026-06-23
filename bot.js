@@ -62,7 +62,7 @@ async function doPost() {
   console.log('\n💫 🔍 🔊 💬');
   const comment = await getCommentToPost();
   if (comment) {
-    console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, after ' + attempts + ' attempts, on this track:\n' + track.permalink_url);
+    console.log('\n🔊 💬 🤖 🚀\n\nFound a usable comment, on attempt #' + attempts + ', on this track:\n' + track.permalink_url);
     console.log('\nTrying to post "' + comment + '" to Mastodon…');
 
     const postedToMastodon = await soundcloudsaid_postToMastodon(comment);
@@ -408,6 +408,7 @@ async function getCommentToPost() {
 
 // Build reply post with info about the upload.
 function getReplyPost() {
+  const attemptCount = attempts > 1 ? integerToWord( attempts ) + ' attempts' : 'one attempt';
   const commentCount = track.comment_count > 1 ? integerToWord( track.comment_count ) + ' comments' : 'one comment';
   const likeCount    = track.favoritings_count > 1 ? integerToWord( track.favoritings_count ) + ' likes' : 'one like';
   const playCount    = track.playback_count > 1 ? integerToWord( track.playback_count ) + ' plays' : 'one play';
@@ -418,7 +419,7 @@ function getReplyPost() {
   let url = new URL(track.permalink_url);
   url = 'https://via.mattmcv.com/?url=' + encodeURIComponent(url.origin + url.pathname);
 
-  const replyPost = `After ${attempts} attempts, this comment was found on an upload from ${date} with ${playCount}, ${likeCount}, and ${commentCount}.\n\n${url}`;
+  const replyPost = `After ${attemptCount}, this comment was found on an upload from ${date} with ${playCount}, ${likeCount}, and ${commentCount}.\n\n${url}`;
 
   return replyPost;
 }
