@@ -424,6 +424,14 @@ function getReplyPost() {
   return replyPost;
 }
 
+// Strip markup and encode HTML entities so untrusted SoundCloud comment text
+// can't inject tags/links when rendered by Mastodon or Bluesky clients.
+function sanitizePostText(text) {
+  return text
+    .replace(/<[^>]*>/g, '')
+    .replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[char]));
+}
+
 async function soundcloudsaid_postToMastodon(thePostToPost) {
   if ( ! thePostToPost) {
     console.error('❰SOUNDCLOUDSAID❱ 🚫 ERROR: No comment retrieved; cannot post to Mastodon.');
@@ -436,7 +444,7 @@ async function soundcloudsaid_postToMastodon(thePostToPost) {
   console.log('❰SOUNDCLOUDSAID❱ ⚡️ NOW ATTEMPTING TO POST TO MASTODON:', thePostToPost);
 
   const postedPost = await soundcloudsaidMastodonConnection.v1.statuses.create({
-    status: thePostToPost,
+    status: sanitizePostText(thePostToPost),
     visibility: 'public',
   });
 
@@ -464,7 +472,7 @@ async function soundcloudsaid_postToBluesky(thePostToPost) {
   console.log('❰SOUNDCLOUDSAID❱ ⚡️ NOW ATTEMPTING TO POST TO BLUESKY:', thePostToPost);
 
   const postedPost = await soundcloudsaidBlueskyAgent.post({
-    text: thePostToPost
+    text: sanitizePostText(thePostToPost)
   });
 
   // console.log('❰SOUNDCLOUDSAID❱ 📋 FULL RESPONSE OF ATTEMPT TO POST TO BLUESKY:', postedPost);
